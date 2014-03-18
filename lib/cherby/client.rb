@@ -27,6 +27,7 @@ module Cherby
       if !known_methods.include?(meth)
         raise ArgumentError, "Unknown Cherwell SOAP API method: #{meth}"
       end
+      # FIXME: Let Savon handle this snake_case stuff
       # Each request has a *_response containing a *_result
       response_field = (meth.to_s + '_response').to_sym
       result_field = (meth.to_s + '_result').to_sym

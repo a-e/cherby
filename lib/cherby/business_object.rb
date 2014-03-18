@@ -41,18 +41,20 @@ module Cherby
 
     # Return the XML representation of this BusinessObject
     def to_xml
-      @dom.to_xml
+      return @dom.to_xml
     end
 
     # Return the node of the field with the given name.
     def get_field_node(field_name)
-      @dom.css("BusinessObject[@Name=#{self.class.object_name}] Field[@Name=#{field_name}]").first
+      selector = "BusinessObject[@Name=#{self.class.object_name}] Field[@Name=#{field_name}]"
+      return @dom.css(selector).first
     end
 
     # Return a hash of field names and values
     def field_values
       result = {}
-      @dom.css("BusinessObject[@Name=#{self.class.object_name}] > FieldList > Field").collect do |node|
+      selector = "BusinessObject[@Name=#{self.class.object_name}] > FieldList > Field"
+      @dom.css(selector).collect do |node|
         result[node['Name']] = node.content
       end
       return result

@@ -23,7 +23,7 @@ end
 describe Cherby::BusinessObject do
   context "Class methods" do
     describe "#create" do
-      it "sets options" do
+      it "sets options in the DOM" do
         obj = MySubclass.create({:first_name => 'Eric', :last_name => 'Idle'})
         first_name = obj.dom.css("BusinessObject[@Name=MySubclass] Field[@Name=First]").first
         last_name = obj.dom.css("BusinessObject[@Name=MySubclass] Field[@Name=Last]").first
@@ -45,7 +45,7 @@ describe Cherby::BusinessObject do
     end #create
 
     describe "#parse_datetime" do
-      it "with timezone offset" do
+      it "works with timezone offset" do
         bo = Cherby::BusinessObject
         dt = bo.parse_datetime("2012-02-09T09:42:13-05:00")
         dt.to_s.should == "2012-02-09T14:42:13+00:00"
@@ -54,13 +54,13 @@ describe Cherby::BusinessObject do
         dt.to_s.should == "2012-02-09T14:42:13+00:00"
       end
 
-      it "without timezone offset" do
+      it "works without timezone offset" do
         bo = Cherby::BusinessObject
         dt = bo.parse_datetime("2012-02-09T09:42:13", -5)
         dt.to_s.should == "2012-02-09T14:42:13+00:00"
       end
 
-      it "with invalid datetime string" do
+      it "raises ArgumentError for invalid datetime string" do
         bo = Cherby::BusinessObject
         lambda do
           bo.parse_datetime("bogus-datetime")
@@ -166,11 +166,32 @@ describe Cherby::BusinessObject do
     end #to_xml
 
     describe "#get_field_node" do
-      it "TODO"
+      before(:each) do
+        xml = %Q{
+          <BusinessObject Name="MySubclass">
+            <FieldList>
+              <Field Name="First">Eric</Field>
+              <Field Name="Last">Idle</Field>
+            </FieldList>
+          </BusinessObject>
+        }
+        @obj = MySubclass.new(xml)
+      end
+
+      it "returns the Field having the given Name" do
+        first_node = @obj.get_field_node('First')
+        first_node.should be_a(Nokogiri::XML::Node)
+        first_node.attr('Name').should == 'First'
+        first_node.inner_html.should == 'Eric'
+      end
+
+      it "returns nil when a Field with the given Name is not found" do
+        @obj.get_field_node('Bogus').should be_nil
+      end
     end #get_field_node
 
     describe "#field_values" do
-      it "returns a hash of field names and their values" do
+      before(:each) do
         xml = %Q{
           <BusinessObject Name="MySubclass">
             <FieldList>
@@ -184,12 +205,18 @@ describe Cherby::BusinessObject do
             </Relationship>
           </BusinessObject>
         }
-        obj = MySubclass.new(xml)
-        # Only fields inside the main FieldList should be included
-        obj.field_values.should == {
-          'First' => 'Eric',
-          'Last' => 'Pierce',
-        }
+        @obj = MySubclass.new(xml)
+      end
+
+      it "includes fields inside the main FieldList element only" do
+        @obj.field_values.should include('First')
+        @obj.field_values.should include('Last')
+        @obj.field_values.should_not include('Middle')
+      end
+
+      it "hashes field names to their values" do
+        @obj.field_values['First'].should == 'Eric'
+        @obj.field_values['Last'].should == 'Pierce'
       end
     end
   end # Instance methods

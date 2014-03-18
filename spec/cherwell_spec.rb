@@ -29,10 +29,11 @@ describe Cherby::Cherwell do
 
   describe "#login" do
     it "success when Cherwell returns a true status" do
-      login_true_xml = File.read(File.join(DATA_DIR, 'cherwell_login_true.xml'))
-      login_true_response = {:code => 200, :headers => {}, :body => login_true_xml}
-
-      savon.expects(:login).with(:message => :any).returns(login_true_response)
+      login_response = savon_response('Login', 'true')
+      puts "Login response:"
+      puts login_response
+      savon.expects(:login).with(:message => :any).
+        returns(login_response)
       @cherwell.login.should be_true
     end
 
@@ -45,10 +46,8 @@ describe Cherby::Cherwell do
     end
 
     it "raises LoginFailed when Cherwell returns a false status" do
-      login_false_xml = File.read(File.join(DATA_DIR, 'cherwell_login_false.xml'))
-      login_false_response = {:code => 200, :headers => {}, :body => login_false_xml}
-
-      savon.expects(:login).with(:message => :any).returns(login_false_response)
+      savon.expects(:login).with(:message => :any).
+        returns(savon_response('Login', 'false'))
       lambda do
         @cherwell.login
       end.should raise_error(
@@ -58,11 +57,28 @@ describe Cherby::Cherwell do
   end #login
 
   describe "#logout" do
-    it "TODO"
+    it "returns true when Cherwell returns a true status" do
+      savon.expects(:logout).with(:message => :any).
+        returns(savon_response('Logout', 'true'))
+      @cherwell.logout.should be_true
+    end
+
+    it "returns false when Cherwell returns a false status" do
+      savon.expects(:logout).with(:message => :any).
+        returns(savon_response('Logout', 'false'))
+      @cherwell.logout.should be_false
+    end
   end #logout
 
   describe "#incident" do
-    it "TODO"
+    it "returns an Incident instance" do
+      message = {'something' => 'value'}
+      incident_xml = File.read(File.join(DATA_DIR, 'incident.xml'))
+      savon.expects(:get_business_object_by_public_id).
+        with(:message => :any).
+        returns(savon_response('GetBusinessObjectByPublicId', incident_xml))
+      @cherwell.incident('51949').should be_a(Cherby::Incident)
+    end
   end #incident
 
   describe "#task" do

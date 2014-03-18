@@ -1,4 +1,4 @@
-#require 'savon'
+require 'savon'
 require 'nokogiri'
 require 'cherby/client'
 require 'cherby/incident'
@@ -98,7 +98,7 @@ module Cherby
       begin
         result = @client.call(method, body)
       # If a SOAP fault occurs, raise an exception
-      rescue Savon::SOAP::Fault => e
+      rescue Savon::SOAPFault => e
         raise SoapError, e.message
       else
         return result
