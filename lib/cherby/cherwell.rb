@@ -31,17 +31,25 @@ module Cherby
         :password => password || @password,
       }
       begin
-        result = @client.login(creds)
+        response = @client.call(:login, :message => creds)
       rescue => e
         # This can happen if a bad URL is given
         raise LoginFailed, e.message
       else
+        if response.body[:login_response][:login_result] == true
+          # FIXME: Using the workaround described in this issue:
+          #   https://github.com/savonrb/savon/issues/363
+          # because the version recommended in the documentation:
+          #   auth_cookies = response.http.cookies
+          # does not work, giving:
+          #   NoMethodError: undefined method `cookies' for #<HTTPI::Response:0x...>
+          @client.globals[:headers] = {"Cookie" => response.http.headers["Set-Cookie"]}
+          return response
         # This can happen if invalid credentials are given
-        if !result
+        else
           raise LoginFailed, "Cherwell returned false status"
         end
       end
-      return result
     end
 
     # Log out of Cherwell.
@@ -96,7 +104,7 @@ module Cherby
       end
 
       begin
-        result = @client.call(method, body)
+        result = @client.call_wrap(method, body)
       # If a SOAP fault occurs, raise an exception
       rescue Savon::SOAPFault => e
         raise SoapError, e.message

@@ -22,7 +22,7 @@ module Cherby
 
     # Call #request with the given method, passing the given SOAP body.
     # Return the content of the `<[MethodName]Result>` element.
-    def call(meth, body={})
+    def call_wrap(meth, body={})
       meth = meth.to_sym
       if !known_methods.include?(meth)
         raise ArgumentError, "Unknown Cherwell SOAP API method: #{meth}"
@@ -32,14 +32,14 @@ module Cherby
       response_field = (meth.to_s + '_response').to_sym
       result_field = (meth.to_s + '_result').to_sym
       # Submit the request
-      response = super(meth, :message => body)
+      response = self.call(meth, :message => body)
       return response.to_hash[response_field][result_field]
     end
 
     # If a method in #known_methods is called, send it as a request
     def method_missing(meth, *args, &block)
       if known_methods.include?(meth)
-        call(meth, args.first)
+        call_wrap(meth, args.first)
       else
         super
       end

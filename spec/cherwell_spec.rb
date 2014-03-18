@@ -30,8 +30,6 @@ describe Cherby::Cherwell do
   describe "#login" do
     it "success when Cherwell returns a true status" do
       login_response = savon_response('Login', 'true')
-      puts "Login response:"
-      puts login_response
       savon.expects(:login).with(:message => :any).
         returns(login_response)
       @cherwell.login.should be_true
@@ -39,7 +37,8 @@ describe Cherby::Cherwell do
 
     it "raises LoginFailed when client.login raises any exception" do
       error = "Arbitrary exception message"
-      @cherwell.client.stub(:login).and_raise(RuntimeError.new(error))
+      @cherwell.client.stub(:call).with(:login, :message => anything).
+        and_raise(RuntimeError.new(error))
       lambda do
         @cherwell.login
       end.should raise_error(Cherby::LoginFailed, error)
