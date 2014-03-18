@@ -1,0 +1,230 @@
+<?xml version="1.0"?>
+<BusinessObject Name="Incident" RecID="{{incident_id}}">
+  <FieldList>
+    <!-- Fields common to all BusinessObjects -->
+    <Field Name="RecID">{{rec_id}}</Field>
+    <Field Name="CreatedDateTime">{{created_date_time}}</Field>
+    <Field Name="CreatedBy">{{created_by}}</Field>
+    <Field Name="CreatedByID"></Field>
+    <Field Name="LastModDateTime">{{last_mod_date_time}}</Field>
+    <Field Name="LastModBy">{{last_mod_by}}</Field>
+    <Field Name="LastModByID"></Field>
+    <Field Name="OwnedBy">{{owned_by}}</Field>
+    <Field Name="OwnedByTeam">{{owned_by_team}}</Field>
+    <Field Name="OwnerID"></Field>
+    <Field Name="OwnerTeamID"></Field>
+    <!-- Unused fields? -->
+    <Field Name="LastModTimeStamp"/>
+
+    <Field Name="IncidentID">{{incident_id}}</Field>
+    <Field Name="Status">{{status}}</Field>
+    <Field Name="StatusDesc"/>
+    <Field Name="Service">{{service}}</Field>
+    <Field Name="Category">{{category}}</Field>
+    <Field Name="SubCategory">{{sub_category}}</Field>
+    <Field Name="SpecificsTypeId"/>
+    <Field Name="Description">{{description}}</Field>
+    <Field Name="Impact">{{impact}}</Field>
+    <Field Name="Urgency">{{urgency}}</Field>
+    <Field Name="Priority">{{priority}}</Field>
+    <Field Name="ClosedDateTime"/>
+    <Field Name="ClosedBy"/>
+    <Field Name="ClosedByID"/>
+    <Field Name="CauseCode"/>
+    <Field Name="IsPrivate">FALSE</Field>
+    <Field Name="Cost">0</Field>
+    <!--
+    <Field Name="CustomerTypeID">93b0d84651e4cea1d8d88342e99803c78f02620d62</Field>
+    <Field Name="CustomerRecID">93bddda849f81c4ad9ed8d4e158523372c31f24072</Field>
+    -->
+    <Field Name="CustomerTypeID">{{customer_type_id}}</Field>
+    <Field Name="CustomerRecID">{{customer_rec_id}}</Field>
+    <Field Name="CloseDescription"/>
+    <Field Name="LinkedProblem"/>
+    <Field Name="ConfigItemTypeID"/>
+    <Field Name="ConfigItemRecID"/>
+    <Field Name="IncidentDurationInDays">0.00</Field>
+    <Field Name="IncidentType">Service Request</Field>
+    <Field Name="RespondBy"/>
+    <Field Name="SLAID">93aec497070aea63541fae4004988811547a5a70b9</Field>
+    <Field Name="SLAName">Technology Services</Field>
+    <Field Name="ResolveBy"/>
+    <Field Name="ClosedOn1stCall">FALSE</Field>
+    <Field Name="CallSource">e-mail</Field>
+    <Field Name="Detail"/>
+    <Field Name="ChangeID"/>
+    <Field Name="MultipleConfig">FALSE</Field>
+    <Field Name="OwnedByEmail"/>
+    <Field Name="IncidentDurationInHours">0</Field>
+    <Field Name="CustomerDisplayName">{{created_by}}</Field>
+    <Field Name="EMailTemplate"/>
+    <Field Name="OwnedByManager"/>
+    <Field Name="OwnedByManagerEmail"/>
+    <Field Name="CreatedByEmail">{{created_by_email}}</Field>
+    <Field Name="InitialITContact">{{created_by}}</Field>
+    <Field Name="InitialITContactEmail">{{created_by_email}}</Field>
+    <Field Name="PendingReason"/>
+    <Field Name="ReviewByDate"/>
+    <Field Name="ProjectCode"/>
+    <Field Name="Task"/>
+    <Field Name="PhaseRecordStatus">Complete</Field>
+    <Field Name="PhaseClassifyStatus">Complete</Field>
+    <Field Name="PhaseInvestigateStatus">In Progress</Field>
+    <Field Name="PhaseRFWStatus">Not Required</Field>
+    <Field Name="PhaseResolveStatus">Required</Field>
+    <Field Name="PhaseCloseStatus">Required</Field>
+    <Field Name="PhaseApprovalsStatus">Not Required</Field>
+    <Field Name="WrkflwCurrentPhase"/>
+    <Field Name="OutsourcedService">FALSE</Field>
+    <Field Name="OutsourcedVendorID"/>
+    <Field Name="OutsourcedVendorName"/>
+    <Field Name="Stat_NumberOfTouches">2</Field>
+    <Field Name="Stat_FirstCallResolution">TRUE</Field>
+    <Field Name="Stat_IncidentEscalated">FALSE</Field>
+    <Field Name="Stat_NumberOfEscalations">0</Field>
+    <Field Name="Stat_24x7ElapsedTime">0</Field>
+    <Field Name="Stat_IncidentReopened">FALSE</Field>
+    <Field Name="Stat_DateTimeResponded">0001-01-01T00:00:00</Field>
+    <Field Name="Stat_ResponseTime">0</Field>
+    <Field Name="Stat_SLAResponseBreached">FALSE</Field>
+    <Field Name="Stat_SLAResolutionBreached">FALSE</Field>
+    <Field Name="Stat_TotalDLHOfIncident">0</Field>
+    <Field Name="Test_embeddedFormPicker"/>
+    <Field Name="LastModByEmail">{{last_mod_by_email}}</Field>
+    <Field Name="Temp_reopen">FALSE</Field>
+    <Field Name="Temp_pending">FALSE</Field>
+    <Field Name="Temp_open">FALSE</Field>
+    <Field Name="Temp_status_set">FALSE</Field>
+    <Field Name="Temp_Active">FALSE</Field>
+    <Field Name="Temp_Accepted">FALSE</Field>
+    <Field Name="Temp_Resolved">FALSE</Field>
+    <Field Name="Temp_Assigned">FALSE</Field>
+    <Field Name="ServiceID">8D71BF81-EBA3-4152-BF34-DDF4931D0A0D</Field>
+    <Field Name="PendingPreviousStatus"/>
+    <Field Name="SelfServiceUrgent"/>
+    <Field Name="SelfServiceMultipleUsers"/>
+    <Field Name="SelfServiceAltContactInfo"/>
+    <Field Name="SelfServiceContactInfoCorrect">FALSE</Field>
+    <Field Name="MatchingText">SHRM Store  Conference Setup</Field>
+    <Field Name="Notes"/>
+    <Field Name="NoteEntry"/>
+    <Field Name="AutomateAvailable">FALSE</Field>
+    <Field Name="SLAIDForCustomer"/>
+    <Field Name="SLAIDForService">93aec497070aea63541fae4004988811547a5a70b9</Field>
+    <Field Name="SLAIDForCI"/>
+    <Field Name="LinkedSLAs"> , 93aec497070aea63541fae4004988811547a5a70b9 , </Field>
+    <Field Name="SLANameForCI"/>
+    <Field Name="SLANameForCustomer"/>
+    <Field Name="SLANameForService">Technology Services</Field>
+    <Field Name="TEMP_showSLAStuff">FALSE</Field>
+    <Field Name="VendorName"/>
+    <Field Name="VendorID"/>
+    <Field Name="ReasonForResolveByBreach"/>
+    <Field Name="ConfigItemDisplayName"/>
+    <Field Name="CICritical">FALSE</Field>
+    <Field Name="ResolveByBreachNotes"/>
+    <Field Name="OneStepPicker"/>
+    <Field Name="ShowAllServices">FALSE</Field>
+    <Field Name="ShowContactInformation">FALSE</Field>
+    <Field Name="ServiceEntitlements"/>
+    <Field Name="ServiceCustomerIsEntitled">FALSE</Field>
+    <Field Name="ServiceGroup">{{service_group}}</Field>
+    <Field Name="Environment">PRD</Field>
+    <Field Name="Temp_EscalationTeam">Network and Systems Operations</Field>
+    <Field Name="PriorityGroup">Less Critical</Field>
+    <Field Name="BlockID"/>
+    <Field Name="ApprovalRequired">No</Field>
+    <Field Name="Approved">FALSE</Field>
+    <Field Name="OwnedByNonCherwellUser">FALSE</Field>
+    <Field Name="Temp_SurveyCreated">FALSE</Field>
+    <Field Name="RespondByWarning">2011-10-24T08:12:00</Field>
+    <Field Name="ResolveByWarning">2011-10-27T13:11:52</Field>
+    <Field Name="Stat_SLAResolutionBreachedWarning">FALSE</Field>
+    <Field Name="Stat_SLAResponseBreachedWarning">FALSE</Field>
+    <Field Name="ReasonForRespondByBreach"/>
+    <Field Name="RespondByBreachNotes"/>
+    <Field Name="HRAuthorized">FALSE</Field>
+    <Field Name="CMDBUpdate"/>
+    <Field Name="ServiceOutageStart">0001-01-01T00:00:00</Field>
+    <Field Name="ServiceOutageEnd">0001-01-01T00:00:00</Field>
+    <Field Name="Temp_ServiceGroup">{{service_group}}</Field>
+    <Field Name="ClosureCode"/>
+    <Field Name="Temp_responded"/>
+    <Field Name="TasksExist">FALSE</Field>
+    <Field Name="ResolvedDate">0001-01-01T00:00:00</Field>
+    <Field Name="CustomerDept">Strategy and Architecture</Field>
+    <Field Name="Temp_DefaultTeam">Service Desk</Field>
+    <Field Name="SubcategoryNonHR">{{sub_category_non_hr}}</Field>
+    <Field Name="ParatureTicketID"/>
+    <Field Name="CustomerEmail">{{customer_email}}</Field>
+    <Field Name="JIRAID">{{jira_id}}</Field>
+  </FieldList>
+  <RelationshipList>
+    <Relationship Name="IncidentLinkedToCustomer" TargetObjectName="Customer" Type="Linked">
+      <BusinessObject Name="ADCustomers">Yudkovsky, Sergey</BusinessObject>
+    </Relationship>
+
+    <!--
+    <Relationship Name="IncidentLinkedToCustomer" TargetObjectID="9337c2311b8e8044aa3e2a48c4a95a9f5555815126" TargetObjectName="Customer" Type="Linked">
+      <BusinessObject Name="ADCustomers" RecID="93bddda849f81c4ad9ed8d4e158523372c31f24072">Moelk, Brian</BusinessObject>
+    </Relationship>
+
+    <Relationship Name="Incident Links SLA" TargetObjectID="933c73c2163058a1ca063b4a879ae21e1e5133f57c" TargetObjectName="SLA" Type="Linked">
+      <BusinessObject Name="SLA" RecID="93aec497070aea63541fae4004988811547a5a70b9">Technology Services</BusinessObject>
+    </Relationship>
+
+    <Relationship Name="Incident Has Tasks" TargetObjectID="9355d5ed41e384ff345b014b6cb1c6e748594aea5b" TargetObjectName="Task" Type="Owns">
+      <BusinessObject Name="Task" RecID="93be05329e0fcf411b5e574030a626b90bd297469f"></BusinessObject>
+    </Relationship>
+
+    <Relationship Name="Incident has Service" TargetObjectID="9366b3bb9e94d86b5d5f434ff3b657c4ec5bfa3bb3" TargetObjectName="Service" Type="Linked">
+      <BusinessObject Name="Service" RecID="8D71BF81-EBA3-4152-BF34-DDF4931D0A0D">SHRM Store</BusinessObject>
+    </Relationship>
+
+    <Relationship Name="Incident has Service SLA" TargetObjectID="933c73c2163058a1ca063b4a879ae21e1e5133f57c" TargetObjectName="SLA" Type="Linked">
+      <BusinessObject Name="SLA" RecID="93aec497070aea63541fae4004988811547a5a70b9">Technology Services</BusinessObject>
+    </Relationship>
+
+    <Relationship Name="Incident Links Service Group" TargetObjectID="93ae4fd3af6355802e542349ebafd6deab1dca3cfb" TargetObjectName="ServiceGroup" Type="Linked">
+      <BusinessObject Name="ServiceGroup" RecID="93ae5021c82196035ca3374845956ce9a66eeb08cc">Technology Services</BusinessObject>
+    </Relationship>
+
+    -->
+
+    <!-- Include this only if there's a related object to link to
+    <Relationship Name="Incident related to other similar incidents" TargetObjectID="6dd53665c0c24cab86870a21cf6434ae" TargetObjectName="Incident" Type="Linked">
+      <BusinessObject Name="Incident" RecID="{{parent_id}}">{{parent_id}}</BusinessObject>
+    </Relationship>
+    -->
+
+    <!-- This chunk including WebsiteForm is required when using Service = "Websites (SHRM)".
+         Unfortunately, it seems to require that the WebsiteForm object be created first.
+    -->
+    <!--
+    <Relationship  Name="IncidentHasSpecifics" TargetObjectID="" TargetObjectName="Specifics" Type="Owns">
+      <BusinessObject  Name="WebsiteForm" RecID="">
+        <FieldList>
+          <Field Name="RecID"></Field>
+          <Field Name="CreatedDateTime">{{now}}</Field>
+          <Field Name="CreatedBy">Yudkovsky, Sergey</Field>
+          <Field Name="CreatedByID">93b10b33b94d800e69d2294942a6fc764cbfa82940</Field>
+          <Field Name="SpecificTypeID"></Field>
+          <Field Name="SpecificTypeName">Website Form</Field>
+          <Field Name="ParentId">{{parent_id}}</Field>
+          <Field Name="LastModDateTime">{{now}}</Field>
+          <Field Name="LastModBy">Yudkovsky, Sergey</Field>
+          <Field Name="LastModByID">93b10b33b94d800e69d2294942a6fc764cbfa82940</Field>
+          <Field Name="ADCustomersID"/>
+          <Field Name="NeedByDate">0001-01-01T00:00:00</Field>
+          <Field Name="URLInfo">jira.shrm.org</Field>
+          <Field Name="EstimatedTime"/>
+          <Field Name="SprintTime"/>
+        </FieldList>
+      </BusinessObject>
+    </Relationship>
+    -->
+
+  </RelationshipList>
+</BusinessObject>
+
+
