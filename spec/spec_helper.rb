@@ -8,6 +8,7 @@ LIB_DIR = File.join(ROOT_DIR, 'lib')
 SPEC_DIR = File.join(ROOT_DIR, 'spec')
 DATA_DIR = File.join(SPEC_DIR, 'data')
 CONFIG_FILE = File.join(ROOT_DIR, 'config', 'test-config.yml')
+CHERWELL_WSDL = File.join(DATA_DIR, 'cherwell.wsdl')
 $LOAD_PATH.unshift(LIB_DIR)
 
 RSpec.configure do |config|

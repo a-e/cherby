@@ -2,8 +2,6 @@ require_relative 'spec_helper'
 require 'cherby/client'
 require 'savon/mock/spec_helper'
 
-CHERWELL_WSDL = File.join(DATA_DIR, 'cherwell.wsdl')
-
 describe Cherby::Client do
   include Savon::SpecHelper
 
@@ -62,7 +60,7 @@ describe Cherby::Client do
 
   describe "#known_methods" do
     it "returns an array of symbolic method names" do
-      @client = Cherby::Client.new("http://example.com")
+      @client = Cherby::Client.new(CHERWELL_WSDL)
       methods = @client.known_methods
       methods.should be_a(Array)
       methods.each do |meth|

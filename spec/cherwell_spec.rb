@@ -16,7 +16,7 @@ describe Cherby::Cherwell do
   before(:each) do
     # TODO: Mock this!
     @config = {
-      'url' => 'http://cherwell.example.com/',
+      'url' => CHERWELL_WSDL,
       'username' => 'somebody',
       'password' => 'somepass',
     }
