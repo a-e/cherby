@@ -19,13 +19,6 @@ module Cherby
       :priority           => "3",
     }
 
-    # Return a new Incident populated with data from the given Jira issue.
-    # FIXME: Implement this in jira2cherwell
-    #def self.from_jira(jira_issue)
-      #jira_data = j2c_incident(jira_issue)
-      #return self.create(jira_data)
-    #end
-
     def id
       self['IncidentID']
     end

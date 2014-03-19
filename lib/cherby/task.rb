@@ -9,13 +9,6 @@ module Cherby
       :status             => "New",
     }
 
-    # Return a new Task populated with data from the given Jira sub-task.
-    # FIXME: Implement this in jira2cherwell
-    #def self.from_jira(jira_task)
-      #jira_data = j2c_task(jira_task)
-      #return self.create(jira_data)
-    #end
-
     def id
       self['TaskID']
     end

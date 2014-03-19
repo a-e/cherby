@@ -187,14 +187,6 @@ module Cherby
       end
     end
 
-    # Create a new incident in Cherwell from the given Jira issue, and return
-    # the new Incident instance, or nil if creation failed.
-    # FIXME: Implement this in jira2cherwell
-    #def create_incident_from_jira_issue(jira_issue)
-      #jira_data = j2c_incident(jira_issue)
-      #return create_incident(jira_data)
-    #end
-
     # Return the text of the last error that occurred,
     # or nil if there was no error
     def last_error

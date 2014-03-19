@@ -8,14 +8,6 @@ module Cherby
     @default_values = {
       :details => "",
     }
-
-    # Return a new JournalNote populated with data from the given Jira comment.
-    # FIXME: Implement this in jira2cherwell
-    #def self.from_jira(jira_comment)
-      #jira_data = j2c_comment(jira_comment)
-      #return self.create(jira_data)
-    #end
-
   end
 end
 
