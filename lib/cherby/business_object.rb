@@ -51,7 +51,7 @@ module Cherby
     end
 
     # Return a hash of field names and values
-    def field_values
+    def to_hash
       result = {}
       selector = "BusinessObject[@Name=#{self.class.object_name}] > FieldList > Field"
       @dom.css(selector).collect do |node|
@@ -59,6 +59,8 @@ module Cherby
       end
       return result
     end
+    alias :field_values :to_hash # For backwards compatibility
+
 
     # Parse a Cherwell date/time string and return a DateTime object in UTC.
     #
