@@ -44,7 +44,7 @@ module Cherby
           # does not work, giving:
           #   NoMethodError: undefined method `cookies' for #<HTTPI::Response:0x...>
           @client.globals[:headers] = {"Cookie" => response.http.headers["Set-Cookie"]}
-          return response
+          return true
         # This can happen if invalid credentials are given
         else
           raise LoginFailed, "Cherwell returned false status"
@@ -72,10 +72,19 @@ module Cherby
     end
 
     # Get a business object based on its public ID or RecID, and return the
-    # XML response. This invokes `GetBusinessObject` or
-    # `GetBusinessObjectByPublicId`, depending on the length of `id`. The
-    # returned XML is the content of the `GetBusinessObjectResult` or
-    # `GetBusinessObjectByPublicIdResult`.
+    # XML response.
+    #
+    # Examples:
+    #
+    #     incident_xml = cherwell.get_business_object(
+    #       'Incident', '12345')
+    #
+    #     note_xml = cherwell.get_business_object(
+    #       'JournalNote', '93bd7e3e067f1dafb454d14cb399dda1ef3f65d36d')
+    #
+    # This invokes `GetBusinessObject` or `GetBusinessObjectByPublicId`,
+    # depending on the length of `id`. The returned XML is the content of the
+    # `GetBusinessObjectResult` or `GetBusinessObjectByPublicIdResult`.
     #
     # @param [String] name_or_id
     #   The `Name` or `IDREF` attribute of the object, specifying the type of
@@ -88,6 +97,9 @@ module Cherby
     #   more, it's assumed to be a RecID. For incidents, the public ID is a
     #   numeric identifier like "50629", while the RecID is a long
     #   hexadecimal string like "93bd7e3e067f1dafb454d14cb399dda1ef3f65d36d".
+    #
+    # @return [String]
+    #   Raw XML response string.
     #
     def get_business_object(name_or_id, id)
       # Assemble the SOAP body
