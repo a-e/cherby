@@ -1,15 +1,6 @@
 source "https://rubygems.org"
 
-gem "httpclient"
-gem 'savon', '>= 2.3.0'
-gem 'yajl-ruby'
-gem 'nokogiri'
-gem 'mustache'
+gem 'bundler'
 
-group :development do
-  gem "rake"
-  gem "bundler"
-  gem "simplecov"
-  gem "pry"
-  gem "rspec"
-end
+# Get all other dependencies from cherby.gemspec
+gemspec
