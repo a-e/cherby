@@ -24,7 +24,10 @@ describe Cherby::Cherwell do
   end
 
   describe "#initialize" do
-    it "accepts hash configuration"
+    it "sets configuration from a hash"
+    it "creates a new Cherby::Client instance" do
+      @cherwell.client.should be_a(Cherby::Client)
+    end
   end #initialize
 
   describe "#login" do
@@ -70,22 +73,68 @@ describe Cherby::Cherwell do
   end #logout
 
   describe "#incident" do
-    it "returns an Incident instance" do
-      message = {'something' => 'value'}
+    it "returns a Cherby::Incident instance" do
+      incident_id = '51949'
       incident_xml = File.read(File.join(DATA_DIR, 'incident.xml'))
-      savon.expects(:get_business_object_by_public_id).
-        with(:message => :any).
-        returns(savon_response('GetBusinessObjectByPublicId', incident_xml))
-      @cherwell.incident('51949').should be_a(Cherby::Incident)
+      @cherwell.stub(:get_business_object).
+        with('Incident', incident_id).
+        and_return(incident_xml)
+      @cherwell.incident(incident_id).should be_a(Cherby::Incident)
     end
   end #incident
 
   describe "#task" do
-    it "TODO"
+    it "returns a Cherby::Task instance" do
+      task_id = '12345'
+      task_xml = File.read(File.join(DATA_DIR, 'task.xml'))
+      @cherwell.stub(:get_business_object).
+        with('Task', task_id).
+        and_return(task_xml)
+      @cherwell.task(task_id).should be_a(Cherby::Task)
+    end
   end #task
 
   describe "#get_business_object" do
-    it "TODO"
+    before(:each) do
+      @name = 'Thing'
+      @rec_id = '12345678901234567890123456789012'
+      @public_id = '12345'
+      @thing_xml = %Q{
+        <FieldList>
+          <Field Name="Name">#{@name}</Field>
+          <Field Name="RecID">#{@rec_id}</Field>
+        </FieldList>
+      }
+    end
+
+    it "invokes :get_business_object for 32-character RecID" do
+      savon.expects(:get_business_object).
+        with(
+          :message => {
+            :busObNameOrId => @name,
+            :busObRecId => @rec_id,
+          }
+        ).returns(
+          savon_response('GetBusinessObject', @thing_xml)
+        )
+      @cherwell.get_business_object(@name, @rec_id)
+    end
+
+    it "invokes :get_business_object_by_public_id for < 32-character IDs" do
+      savon.expects(:get_business_object_by_public_id).
+        with(
+          :message => {
+            :busObNameOrId => @name,
+            :busObPublicId => @public_id,
+          }
+        ).returns(
+          savon_response('GetBusinessObjectByPublicId', @thing_xml)
+        )
+      @cherwell.get_business_object(@name, @public_id)
+    end
+
+    it "raises a Cherby::SoapError if a Savon::SOAPFault occurs"
+    it "returns a raw XML response string"
   end #get_business_object
 
   describe "#update_object_xml" do
