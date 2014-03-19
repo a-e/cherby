@@ -36,7 +36,13 @@ module Cherby
       return response.to_hash[response_field][result_field]
     end
 
-    # If a method in #known_methods is called, send it as a request
+    # If a method in #known_methods is called, send it as a request.
+    #
+    # Example:
+    #
+    #     client.get_business_object_definition(
+    #       :nameOrId => 'JournalNote')
+    #
     def method_missing(meth, *args, &block)
       if known_methods.include?(meth)
         call_wrap(meth, args.first)
@@ -49,6 +55,36 @@ module Cherby
     def known_methods
       return self.operations.sort
     end
+
+    # Return parameters for the given Cherwell API method.
+    def params_for_method(method)
+      if @wsdl.operations.include?(method)
+        return @wsdl.operations[method][:parameters]
+      else
+        return {}
+      end
+    end
+
+=begin
+    # ---------------------------------
+    # Straight-up Cherwell API wrappers
+    # ---------------------------------
+    # TODO: Autogenerate these somehow
+    # (using #params_for_method to fill in parameter names)
+
+    def confirm_login(userId, password)
+      call_wrap(:confirm_login, :userId => userId, :password => password)
+    end
+
+    def query_by_field_value(busObNameOrId, fieldNameOrId, value)
+      call_wrap(
+        :query_by_field_value,
+        :busObNameOrId => busObNameOrId,
+        :fieldNameOrId => fieldNameOrId,
+        :value => value
+      )
+    end
+=end
 
   end
 end
