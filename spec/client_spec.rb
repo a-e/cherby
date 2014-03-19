@@ -69,4 +69,9 @@ describe Cherby::Client do
     end
   end #known_methods
 
+  describe "#params_for_method" do
+    it "returns a hash of parameters and their type info"
+    it "returns an empty hash if method has no parameters"
+    it "returns an empty hash for unknown parameters"
+  end #params_for_method
 end # Cherby::Client

@@ -45,7 +45,12 @@ module Cherby
     #
     def method_missing(meth, *args, &block)
       if known_methods.include?(meth)
-        call_wrap(meth, args.first)
+        if args.first.is_a?(Hash)
+          call_wrap(meth, args.first)
+        else
+          hash_args = args_to_hash(meth, *args)
+          call_wrap(meth, hash_args)
+        end
       else
         super
       end
@@ -59,33 +64,27 @@ module Cherby
     # Return parameters for the given Cherwell API method.
     def params_for_method(method)
       if @wsdl.operations.include?(method)
-        return @wsdl.operations[method][:parameters]
+        return @wsdl.operations[method][:parameters] || {}
       else
         return {}
       end
     end
 
-=begin
-    # ---------------------------------
-    # Straight-up Cherwell API wrappers
-    # ---------------------------------
-    # TODO: Autogenerate these somehow
-    # (using #params_for_method to fill in parameter names)
-
-    def confirm_login(userId, password)
-      call_wrap(:confirm_login, :userId => userId, :password => password)
+    # Convert positional parameters into a `:key => value` hash,
+    # with parameter names inferred from `#params_for_method`.
+    #
+    # @raise [ArgumentError]
+    #   If the given number of `args` doesn't match the number of parameters
+    #   expected by `method`.
+    #
+    def args_to_hash(method, *args)
+      params = params_for_method(method)
+      if params.count != args.count
+        raise ArgumentError.new(
+          "Wrong number of arguments (#{args.count} for #{params.count})")
+      end
+      return Hash[params.keys.zip(args)]
     end
-
-    def query_by_field_value(busObNameOrId, fieldNameOrId, value)
-      call_wrap(
-        :query_by_field_value,
-        :busObNameOrId => busObNameOrId,
-        :fieldNameOrId => fieldNameOrId,
-        :value => value
-      )
-    end
-=end
-
   end
 end
 
