@@ -17,7 +17,11 @@ task :pry, :config_yml do |t, args|
 
   config = YAML.load(File.open(args.config_yml))
 
-  cherwell = Cherby::Cherwell.new(config)
+  cherwell = Cherby::Cherwell.new(
+    config['url'],
+    config['username'],
+    config['password']
+  )
 
   binding.pry
 end

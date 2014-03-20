@@ -10,7 +10,47 @@ Cherby is a Ruby wrapper for the
 Usage
 -----
 
-TODO
+Connect to a Cherwell server by providing the URL of the web service:
+
+    url = "http://my.server/CherwellService/api.asmx"
+    cherwell = Cherby::Cherwell.new(url)
+
+Login by providing username and password, either during instantiation, or later
+when calling the `#login` method:
+
+    cherwell = Cherby::Cherwell.new(url, 'sisko', 'baseball')
+    cherwell.login
+    # => true
+
+    # or
+
+    cherwell = Cherby::Cherwell.new(url)
+    cherwell.login('sisko', 'baseball')
+    # => true
+
+Fetch an Incident:
+
+    incident = cherwell.incident('12345')
+    # => #<Cherby::Incident:0x...>
+
+View as a Hash:
+
+    incident.to_hash
+    # => {
+    #   'IncidentID' => '12345',
+    #   'Status' => 'Open',
+    #   'Priority' => '7',
+    #   ...
+    # }
+
+Make changes:
+
+    incident['Status'] = 'Closed'
+    incident['CloseDescription'] = 'Issue resolved'
+
+Save back to Cherwell:
+
+    cherwell.save_incident(incident)
 
 
 Copyright

@@ -15,11 +15,11 @@ module Cherby
   class Cherwell
     attr_reader :url, :username, :client
 
-    def initialize(config)
-      @url = config['url']
+    def initialize(web_service_url, username=nil, password=nil)
+      @url = web_service_url
       @url.chop! if @url =~ /\/$/   # Remove any trailing slash
-      @username = config['username']
-      @password = config['password']
+      @username = username
+      @password = password
       @client = Cherby::Client.new(@url)
     end
 

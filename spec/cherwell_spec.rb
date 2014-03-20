@@ -20,7 +20,7 @@ describe Cherby::Cherwell do
       'username' => 'somebody',
       'password' => 'somepass',
     }
-    @cherwell = Cherby::Cherwell.new(@config)
+    @cherwell = Cherby::Cherwell.new(CHERWELL_WSDL)
   end
 
   describe "#initialize" do
