@@ -2,3 +2,5 @@
 .ruby-gemset
 coverage/*
 Gemfile.lock
+doc/*
+.yardoc/*

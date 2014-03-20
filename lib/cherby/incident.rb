@@ -3,7 +3,6 @@ require 'mustache'
 require 'cherby/business_object'
 require 'cherby/task'
 require 'cherby/journal_note'
-require 'cherby/consts'
 
 module Cherby
   class Incident < BusinessObject
