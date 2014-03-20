@@ -3,18 +3,23 @@ require 'nokogiri'
 require 'cherby/client'
 require 'cherby/incident'
 require 'cherby/task'
+require 'cherby/exceptions'
 
 module Cherby
-
-  class LoginFailed < RuntimeError
-  end
-
-  class SoapError < RuntimeError
-  end
-
+  # Top-level Cherwell interface
   class Cherwell
     attr_reader :url, :username, :client
 
+    # Connect to a Cherwell server.
+    #
+    # @param [String] web_service_url
+    #   Full URL to the Cherwell web service API (typically ending in
+    #   `api.asmx`)
+    # @param [String] username
+    #   Default Cherwell user ID to use
+    # @param [String] password
+    #   Default Cherwell password to use
+    #
     def initialize(web_service_url, username=nil, password=nil)
       @url = web_service_url
       @url.chop! if @url =~ /\/$/   # Remove any trailing slash
@@ -25,6 +30,20 @@ module Cherby
 
     # Login to Cherwell using the given credentials. Return true if
     # login succeeded, or raise `LoginFailed` if login failed.
+    #
+    # @param [String] username
+    #   User ID to login with. If omitted, the username that was passed to
+    #   `Cherwell.new` is used.
+    # @param [String] password
+    #   Password to login with. If omitted, the password that was passed to
+    #   `Cherwell.new` is used.
+    #
+    # @return [Boolean]
+    #   `true` if login was successful
+    #
+    # @raise [LoginFailed]
+    #   If login failed for any reason
+    #
     def login(username=nil, password=nil)
       creds = {
         :userId => username || @username,
@@ -53,12 +72,19 @@ module Cherby
     end
 
     # Log out of Cherwell.
+    #
+    # @return [Boolean]
+    #   Logout response as reported by Cherwell.
+    #
     def logout
       return @client.logout
     end
 
     # Get the Cherwell incident with the given public ID, and return an
     # Incident object.
+    #
+    # @return [Incident]
+    #
     def incident(id)
       incident_xml = get_business_object('Incident', id)
       return Incident.new(incident_xml.to_s)
@@ -66,6 +92,9 @@ module Cherby
 
     # Get the Cherwell task with the given public ID, and return a Task
     # object.
+    #
+    # @return [Task]
+    #
     def task(id)
       task_xml = get_business_object('Task', id)
       return Task.new(task_xml.to_s)
@@ -74,13 +103,12 @@ module Cherby
     # Get a business object based on its public ID or RecID, and return the
     # XML response.
     #
-    # Examples:
+    # @example
+    #   incident_xml = cherwell.get_business_object(
+    #     'Incident', '12345')
     #
-    #     incident_xml = cherwell.get_business_object(
-    #       'Incident', '12345')
-    #
-    #     note_xml = cherwell.get_business_object(
-    #       'JournalNote', '93bd7e3e067f1dafb454d14cb399dda1ef3f65d36d')
+    #   note_xml = cherwell.get_business_object(
+    #     'JournalNote', '93bd7e3e067f1dafb454d14cb399dda1ef3f65d36d')
     #
     # This invokes `GetBusinessObject` or `GetBusinessObjectByPublicId`,
     # depending on the length of `id`. The returned XML is the content of the
@@ -89,7 +117,7 @@ module Cherby
     # @param [String] name_or_id
     #   The `Name` or `IDREF` attribute of the object, specifying the type of
     #   entity you want to look up. These are represented in XML responses in
-    #   the form <BusinessObject IDREF="<idref>" Name="<name>" ...>.
+    #   the form `<BusinessObject IDREF="<idref>" Name="<name>" ...>`.
     #   Some allowed names: Incident, WebsiteForm, ServiceGroup, MailHistory,
     #   JournalNote, SLA
     # @param [String] id
@@ -155,12 +183,7 @@ module Cherby
     end
 
     # Create a new Cherwell incident with the given data. If creation
-    # succeeds, return the Incident instance; otherwise, return nil.
-    #
-    # @param [Hash] data
-    #   Incident fields to initialize. All required fields must be filled
-    #   in, or creation will fail. At minimum this includes :service,
-    #   :sub_category, and :priority.
+    # succeeds, return the Incident instance; otherwise, return `nil`.
     #
     # @example
     #   create_incident({
@@ -168,6 +191,14 @@ module Cherby
     #     :sub_category => 'New/Modified Functionality',
     #     :priority => '4',
     #   })
+    #
+    # @param [Hash] data
+    #   Incident fields to initialize. All required fields must be filled
+    #   in, or creation will fail. At minimum this includes `:service`,
+    #   `:sub_category`, and `:priority`.
+    #
+    # @return [Incident, nil]
+    #   The created incident, or `nil` if creation failed.
     #
     def create_incident(data)
       incident = Incident.create(data)
@@ -186,8 +217,11 @@ module Cherby
       end
     end
 
-    # Return the text of the last error that occurred,
-    # or nil if there was no error
+    # Get the last error reported by Cherwell.
+    #
+    # @return [String, nil]
+    #   Text of the last error that occurred, or `nil` if there was no error.
+    #
     def last_error
       return @client.get_last_error
     end

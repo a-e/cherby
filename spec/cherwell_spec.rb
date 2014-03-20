@@ -1,5 +1,6 @@
 require_relative 'spec_helper'
 require 'cherby/cherwell'
+require 'cherby/exceptions'
 require 'savon/mock/spec_helper'
 
 describe Cherby::Cherwell do
@@ -38,7 +39,7 @@ describe Cherby::Cherwell do
       @cherwell.login.should be_true
     end
 
-    it "raises LoginFailed when client.login raises any exception" do
+    it "raises Cherby::LoginFailed when client.login raises any exception" do
       error = "Arbitrary exception message"
       @cherwell.client.stub(:call).with(:login, :message => anything).
         and_raise(RuntimeError.new(error))
@@ -47,7 +48,7 @@ describe Cherby::Cherwell do
       end.should raise_error(Cherby::LoginFailed, error)
     end
 
-    it "raises LoginFailed when Cherwell returns a false status" do
+    it "raises Cherby::LoginFailed when Cherwell returns a false status" do
       savon.expects(:login).with(:message => :any).
         returns(savon_response('Login', 'false'))
       lambda do

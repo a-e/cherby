@@ -56,6 +56,23 @@ describe Cherby::Client do
       @client.call_wrap(:login)
     end
 
+    it "passes the body to the SOAP method" do
+      body = {:userId => 'someone', :password => 'somepass'}
+      savon.expects(:login).
+        with(:message => body).
+        returns(savon_response('Login', 'true'))
+      @client.call_wrap(:login, body)
+    end
+
+    it "returns the string found in <[MethodName]Result>" do
+      result_string = "Login result text"
+      savon.expects(:login).
+        with(:message => :any).
+        returns(savon_response('Login', result_string))
+      result = @client.call_wrap(:login)
+      result.should == result_string
+    end
+
     it "raises ArgumentError if method is unknown" do
       lambda do
         @client.call_wrap(:bogus)

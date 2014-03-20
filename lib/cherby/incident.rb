@@ -5,6 +5,7 @@ require 'cherby/task'
 require 'cherby/journal_note'
 
 module Cherby
+  # Wrapper for Cherwell incident objects.
   class Incident < BusinessObject
     @object_name = 'Incident'
     @template = 'incident'
@@ -28,6 +29,9 @@ module Cherby
       return id.to_s =~ /\d+/
     end
 
+    # Mark this incident as complete by filling in relevant fields.
+    # FIXME: Parameterize these, instead of assuming Jira relationship.
+    #
     def complete!(comments = "Closed in Jira => automated close.")
       self["CloseDescription"] = comments
       self["LastModDateTime"] = DateTime.now.to_s
@@ -43,17 +47,20 @@ module Cherby
       self["SubcategoryNonHR"] = "JIRA"
     end
 
-    def reopen!(comments = nil)
-    end
-
     # Return Task instances for all tasks associated with this Incident
+    #
+    # @return [Array<Task>]
+    #
     def tasks
       @tasks ||= @dom.css("BusinessObject[@Name=Task]").map do |element|
         Task.new(element.to_xml)
       end
     end
 
-    # Return JournalNote instances for all notes associated with this Incident
+    # Return all journal notes associated with this Incident.
+    #
+    # @return [Array<JournalNote>]
+    #
     def journal_notes
       css = "Relationship[@Name='Incident has Notes']" +
             " BusinessObject[@Name=JournalNote]"
@@ -80,6 +87,10 @@ module Cherby
     end
 
     # Add a new JournalNote to this incident.
+    #
+    # @param [JournalNote] journal_note
+    #   The note to add to the incident
+    #
     def add_journal_note(journal_note)
       return nil if !exists?
       relationship_xml = Mustache.render_file('journal_note_relationship',
@@ -89,6 +100,13 @@ module Cherby
 
     # Return True if this Incident has important fields differing from the
     # given Incident.
+    #
+    # @param [Incident] incident
+    #   The Incident to compare this one to.
+    #
+    # @return [Boolean]
+    #   `true` if the incidents differn `false` otherwise.
+    #
     def differs_from?(incident)
       return true if self['Status'] != incident['Status']
       return true if self['JIRAID'] != incident['JIRAID']
@@ -96,6 +114,10 @@ module Cherby
     end
 
     # Update this Incident with important fields from the given Incident.
+    #
+    # @param [Incident] incident
+    #   The Incident to update this one from.
+    #
     def update_from(incident)
       self['Status'] = incident['Status']
       self['JIRAID'] = incident['JIRAID']
