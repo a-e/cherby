@@ -117,8 +117,7 @@ module Cherby
 
       begin
         result = @client.call_wrap(method, body)
-      # If a SOAP fault occurs, raise an exception
-      rescue Savon::SOAPFault => e
+      rescue Savon::Error => e
         raise SoapError, e.message
       else
         return result
