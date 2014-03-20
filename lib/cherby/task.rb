@@ -14,7 +14,7 @@ module Cherby
     end
 
     def exists?
-      return !id.nil?
+      return !id.to_s.empty?
     end
 
     # Return True if this Task has important fields differing from the given Task.

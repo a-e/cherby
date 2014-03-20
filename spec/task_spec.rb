@@ -10,11 +10,31 @@ module Cherby
       end
 
       describe "#id" do
-        it "TODO"
+        it "returns the value from the TaskID field" do
+          task = Task.new(@task_xml)
+          task['TaskID'] = '9876'
+          task.id.should == '9876'
+        end
       end #id
 
       describe "#exists?" do
-        it "TODO"
+        it "true if task ID is non-nil" do
+          task = Task.new(@task_xml)
+          task['TaskID'] = '9876'
+          task.exists?.should be_true
+        end
+
+        it "false if task ID is nil" do
+          task = Task.new(@task_xml)
+          task['TaskID'] = nil
+          task.exists?.should be_false
+        end
+
+        it "false if task ID is empty string" do
+          task = Task.new(@task_xml)
+          task['TaskID'] = ''
+          task.exists?.should be_false
+        end
       end #exists?
 
       describe "#differs_from?" do
