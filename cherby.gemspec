@@ -17,7 +17,6 @@ Gem::Specification.new do |s|
   s.add_dependency 'mustache'
 
   s.add_development_dependency "rake"
-  s.add_development_dependency "bundler"
   s.add_development_dependency "simplecov"
   s.add_development_dependency "pry"
   s.add_development_dependency "rspec"
