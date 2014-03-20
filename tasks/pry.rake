@@ -11,8 +11,6 @@ task :pry, :config_yml do |t, args|
     exit
   end
 
-  $LOAD_PATH << File.expand_path('./lib')
-
   require 'pry'
   require 'savon'
   require 'cherby'
