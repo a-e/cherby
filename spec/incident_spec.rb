@@ -103,18 +103,6 @@ module Cherby
           incident2.differs_from?(@incident).should be_true
         end
       end #differs_from?
-
-      describe "#update_from" do
-        it "modifies relevant fields" do
-          incident2 = Cherby::Incident.new(@incident_xml)
-          @incident['Status'] = 'New'
-          @incident['JIRAID'] = 'TST-123'
-          incident2.update_from(@incident)
-          incident2['Status'].should == 'New'
-          incident2['JIRAID'].should == 'TST-123'
-        end
-      end #update_from
-
     end # Instance methods
 
     context "Inherited instance methods" do

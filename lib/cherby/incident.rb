@@ -113,16 +113,6 @@ module Cherby
       return false
     end
 
-    # Update this Incident with important fields from the given Incident.
-    #
-    # @param [Incident] incident
-    #   The Incident to update this one from.
-    #
-    def update_from(incident)
-      self['Status'] = incident['Status']
-      self['JIRAID'] = incident['JIRAID']
-    end
-
     # DO NOT REMOVE: use the follow code for code-gen of Cherwell consts
 =begin
     def extract_lines(css, l)

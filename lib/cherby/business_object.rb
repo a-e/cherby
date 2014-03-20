@@ -120,6 +120,7 @@ module Cherby
     end
 
     # Return the content in the field with the given name.
+    # TODO: Exception for unknown field name
     def [](field_name)
       if field = get_field_node(field_name)
         return field.content
@@ -127,9 +128,28 @@ module Cherby
     end
 
     # Modify the content in the field with the given name.
+    # TODO: Exception for unknown field name
     def []=(field_name, value)
       if field = get_field_node(field_name)
         field.content = value.to_s
+      end
+    end
+
+    # Copy designated fields from one BusinessObject to another.
+    #
+    # @example
+    #   object_a.copy_fields_from(object_b, 'Status', 'Description')
+    #   # object_a['Status']      = object_b['Status']
+    #   # object_a['Description'] = object_b['Description']
+    #
+    # @param [BusinessObject] other_object
+    #   The object to copy field values from
+    # @param [Array<String>] field_names
+    #   Names of fields whose values you want to copy
+    #
+    def copy_fields_from(other_object, *field_names)
+      field_names.each do |field|
+        self[field] = other_object[field]
       end
     end
   end

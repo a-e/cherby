@@ -219,7 +219,32 @@ describe Cherby::BusinessObject do
         @obj.field_values['Last'].should == 'Pierce'
       end
     end
-  end # Instance methods
 
+    describe "#copy_fields_from" do
+      before(:each) do
+        xml = %Q{
+          <BusinessObject Name="MySubclass">
+            <FieldList>
+              <Field Name="Status">Original Status</Field>
+              <Field Name="Description">Original Description</Field>
+              <Field Name="Comment">Original Comment</Field>
+            </FieldList>
+          </BusinessObject>
+        }
+        @obj1 = MySubclass.new(xml)
+        @obj2 = MySubclass.new(xml)
+      end
+
+      it "copies fields from another BusinessObject" do
+        @obj2['Status'] = 'Modified Status'
+        @obj2['Description'] = 'Modified Description'
+
+        @obj1.copy_fields_from(@obj2, 'Status', 'Description')
+        @obj1['Status'].should == 'Modified Status'
+        @obj1['Description'].should == 'Modified Description'
+        @obj1['Comment'].should == 'Original Comment'
+      end
+    end
+  end # Instance methods
 end # Cherby::BusinessObject
 

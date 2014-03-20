@@ -23,12 +23,6 @@ module Cherby
       return false
     end
 
-    # Update this Task with important fields from the given Task.
-    def update_from(task)
-      self['Status'] = task['Status']
-      self['ResolutionCode'] = task['ResolutionCode']
-    end
-
     # Add a JournalNote to this Task. Since Tasks cannot directly have JournalNotes
     # associated with them, this just appends the note's content to the Technician Notes
     # field (aka 'CompletionDetails') in the Task.

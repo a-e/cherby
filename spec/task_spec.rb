@@ -59,20 +59,6 @@ module Cherby
         end
       end #differs_from?
 
-      describe "#update_from" do
-        it "modifies Status and ResolutionCode" do
-          task1 = Task.new(@task_xml)
-          task2 = Task.new(@task_xml)
-
-          task1['Status'] = 'Resolved'
-          task1['ResolutionCode'] = 'Completed'
-
-          task2.update_from(task1)
-          task2['Status'].should == 'Resolved'
-          task2['ResolutionCode'].should == 'Completed'
-        end
-      end #update_from
-
       describe "#add_journal_note" do
         it "adds a note to the Task" do
           task = Task.new(@task_xml)
