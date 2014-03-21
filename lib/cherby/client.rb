@@ -11,7 +11,7 @@ module Cherby
     #   like "http://my.hostname.com/CherwellService/api.asmx?WSDL".
     #   The `http://` and `?WSDL` parts are automatically added if missing.
     #
-    def initialize(base_url)
+    def initialize(base_url, verbose_logging=false)
       if File.exist?(base_url)
         wsdl_url = base_url
       elsif base_url =~ /^http/
@@ -23,7 +23,7 @@ module Cherby
       elsif base_url !~ /^http/
         raise ArgumentError, "Client URL must be a local file, or begin with http"
       end
-      super(:wsdl => wsdl_url)
+      super(:wsdl => wsdl_url, :log => verbose_logging)
     end
 
     # Call a given SOAP method with an optional body.
