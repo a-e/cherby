@@ -86,7 +86,7 @@ module Cherby
     # @return [Incident]
     #
     def incident(id)
-      incident_xml = get_business_object('Incident', id)
+      incident_xml = get_object_xml('Incident', id)
       return Incident.new(incident_xml.to_s)
     end
 
@@ -96,7 +96,7 @@ module Cherby
     # @return [Task]
     #
     def task(id)
-      task_xml = get_business_object('Task', id)
+      task_xml = get_object_xml('Task', id)
       return Task.new(task_xml.to_s)
     end
 
@@ -104,34 +104,32 @@ module Cherby
     # XML response.
     #
     # @example
-    #   incident_xml = cherwell.get_business_object(
+    #   incident_xml = cherwell.get_object_xml(
     #     'Incident', '12345')
     #
-    #   note_xml = cherwell.get_business_object(
+    #   note_xml = cherwell.get_object_xml(
     #     'JournalNote', '93bd7e3e067f1dafb454d14cb399dda1ef3f65d36d')
     #
-    # This invokes `GetBusinessObject` or `GetBusinessObjectByPublicId`,
-    # depending on the length of `id`. The returned XML is the content of the
-    # `GetBusinessObjectResult` or `GetBusinessObjectByPublicIdResult`.
-    #
-    # @param [String] name_or_id
-    #   The `Name` or `IDREF` attribute of the object, specifying the type of
-    #   entity you want to look up. These are represented in XML responses in
-    #   the form `<BusinessObject IDREF="<idref>" Name="<name>" ...>`.
-    #   Some allowed names: Incident, WebsiteForm, ServiceGroup, MailHistory,
-    #   JournalNote, SLA
+    # @param [String] object_type
+    #   What type of object to fetch, for example "Incident", "Customer",
+    #   "Task", "JournalNote", "SLA" etc. May also be the `IDREF` of an
+    #   object type. Cherwell's API knows this as `busObNameOrId`.
     # @param [String] id
     #   The public ID or RecID of the object. If this is 32 characters or
     #   more, it's assumed to be a RecID. For incidents, the public ID is a
     #   numeric identifier like "50629", while the RecID is a long
     #   hexadecimal string like "93bd7e3e067f1dafb454d14cb399dda1ef3f65d36d".
     #
+    # This invokes `GetBusinessObject` or `GetBusinessObjectByPublicId`,
+    # depending on the length of `id`. The returned XML is the content of the
+    # `GetBusinessObjectResult` or `GetBusinessObjectByPublicIdResult`.
+    #
     # @return [String]
     #   Raw XML response string.
     #
-    def get_business_object(name_or_id, id)
+    def get_object_xml(object_type, id)
       # Assemble the SOAP body
-      body = {:busObNameOrId => name_or_id}
+      body = {:busObNameOrId => object_type}
 
       # If ID is really long, it's probably a RecID
       if id.to_s.length >= 32
@@ -151,6 +149,7 @@ module Cherby
         return result
       end
     end
+
 
     # Update a given Cherwell object by submitting its XML to the SOAP
     # interface.
@@ -186,11 +185,11 @@ module Cherby
     # succeeds, return the Incident instance; otherwise, return `nil`.
     #
     # @example
-    #   create_incident({
+    #   create_incident(
     #     :service => 'Consulting Services',
     #     :sub_category => 'New/Modified Functionality',
     #     :priority => '4',
-    #   })
+    #   )
     #
     # @param [Hash] data
     #   Incident fields to initialize. All required fields must be filled

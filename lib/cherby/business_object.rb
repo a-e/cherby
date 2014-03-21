@@ -19,6 +19,9 @@ module Cherby
 
     # Create a new BusinessObject subclass instance from the given hash of
     # options.
+    # FIXME: Make this method accept CamelCase string field names instead of
+    # just :snake_case symbols, as part of a larger strategy to treat field names
+    # consistently throughout (using Cherwell's CamelCase strings everywhere)
     def self.create(options={})
       if self.template.empty?
         # TODO: Exception subclass
@@ -46,15 +49,15 @@ module Cherby
 
     # Return the node of the field with the given name.
     def get_field_node(field_name)
-      selector = "BusinessObject[@Name=#{self.class.object_name}] Field[@Name=#{field_name}]"
+      selector = "BusinessObject > FieldList > Field[@Name=#{field_name}]"
       return @dom.css(selector).first
     end
 
     # Return a hash of field names and values
     def to_hash
       result = {}
-      selector = "BusinessObject[@Name=#{self.class.object_name}] > FieldList > Field"
-      @dom.css(selector).collect do |node|
+      selector = "BusinessObject > FieldList > Field"
+      @dom.css(selector).each do |node|
         result[node['Name']] = node.content
       end
       return result

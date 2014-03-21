@@ -77,7 +77,7 @@ describe Cherby::Cherwell do
     it "returns a Cherby::Incident instance" do
       incident_id = '51949'
       incident_xml = File.read(File.join(DATA_DIR, 'incident.xml'))
-      @cherwell.stub(:get_business_object).
+      @cherwell.stub(:get_object_xml).
         with('Incident', incident_id).
         and_return(incident_xml)
       @cherwell.incident(incident_id).should be_a(Cherby::Incident)
@@ -88,14 +88,14 @@ describe Cherby::Cherwell do
     it "returns a Cherby::Task instance" do
       task_id = '12345'
       task_xml = File.read(File.join(DATA_DIR, 'task.xml'))
-      @cherwell.stub(:get_business_object).
+      @cherwell.stub(:get_object_xml).
         with('Task', task_id).
         and_return(task_xml)
       @cherwell.task(task_id).should be_a(Cherby::Task)
     end
   end #task
 
-  describe "#get_business_object" do
+  describe "#get_object_xml" do
     before(:each) do
       @name = 'Thing'
       @rec_id = '12345678901234567890123456789012'
@@ -117,7 +117,7 @@ describe Cherby::Cherwell do
       ).returns(
         savon_response('GetBusinessObject', @thing_xml)
       )
-      @cherwell.get_business_object(@name, @rec_id)
+      @cherwell.get_object_xml(@name, @rec_id)
     end
 
     it "invokes GetBusinessObjectByPublicId for < 32-character IDs" do
@@ -129,7 +129,7 @@ describe Cherby::Cherwell do
       ).returns(
         savon_response('GetBusinessObjectByPublicId', @thing_xml)
       )
-      @cherwell.get_business_object(@name, @public_id)
+      @cherwell.get_object_xml(@name, @public_id)
     end
 
     it "returns a raw XML response string" do
@@ -139,7 +139,7 @@ describe Cherby::Cherwell do
       ).returns(
         savon_response('GetBusinessObjectByPublicId', xml)
       )
-      result = @cherwell.get_business_object(@name, @public_id)
+      result = @cherwell.get_object_xml(@name, @public_id)
       result.should == xml
     end
 
@@ -147,11 +147,11 @@ describe Cherby::Cherwell do
       soap_fault = Savon::Error.new("Kaboom")
       @cherwell.client.stub(:call).and_raise(soap_fault)
       lambda do
-        @cherwell.get_business_object(@name, @public_id)
+        @cherwell.get_object_xml(@name, @public_id)
       end.should raise_error(
         Cherby::SoapError, /Kaboom/)
     end
-  end #get_business_object
+  end #get_object_xml
 
   describe "#update_object_xml" do
     before(:each) do
