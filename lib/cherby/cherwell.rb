@@ -225,6 +225,22 @@ module Cherby
       return @client.get_last_error
     end
 
+    # Get a business object definition as a hash
+    # ex.
+    #     get_object_definition('Incident')
+    #
+    # TODO: Use this as the basis for building templates, intead of mustache
+    #
+    def get_object_definition(object_type)
+      result = {}
+      definition = @client.get_business_object_definition(object_type)
+      selector = 'BusinessObjectDef > FieldList > Field'
+      Nokogiri::XML(definition).css(selector).map do |field|
+        result[field['Name']] = field.css('Description').inner_html
+      end
+      return result
+    end
+
   end # class Cherwell
 end # module Cherby
 
