@@ -209,11 +209,9 @@ module Cherby
       # Result contains the public ID of the new incident, or nil if the
       # incident-creation failed.
       if !result.nil?
-        puts "result is not nil! result is #{result.inspect}"
         incident['IncidentID'] = result
         return incident
       else
-        puts "!?? result is nil"
         return nil
       end
     end
