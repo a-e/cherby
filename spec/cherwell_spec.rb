@@ -296,5 +296,31 @@ describe Cherby::Cherwell do
     end
   end #last_error
 
+  describe "#get_object_definition" do
+    it "returns a hash of field names" do
+      @definition_xml = %Q{
+        <Trebuchet>
+          <BusinessObjectDef Name="Incident">
+            <Alias/>
+            <FieldList>
+              <Field Name="RecID"><Description>Unique identifier</Description></Field>
+              <Field Name="First"><Description>First Name</Description></Field>
+              <Field Name="Last"><Description>Last Name</Description></Field>
+            </FieldList>
+          </BusinessObjectDef>
+        </Trebuchet>
+      }
+      savon.expects(:get_business_object_definition).
+        with(:message => {:nameOrId => 'Incident'}).
+        returns(
+          savon_response('GetBusinessObjectDefinition', @definition_xml)
+        )
+      @cherwell.get_object_definition('Incident').should == {
+        'First' => 'First Name',
+        'Last' => 'Last Name',
+        'RecID' => 'Unique identifier'
+      }
+    end
+  end #get_object_definition
 end # describe Cherby::Cherwell
 
