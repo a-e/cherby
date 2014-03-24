@@ -1,4 +1,3 @@
-require 'mustache'
 require 'nokogiri'
 
 module Cherby
@@ -7,14 +6,11 @@ module Cherby
 
     # Override this with the value of the BusinessObject's 'Name' attribute
     @object_name = ''
-    # Override this with the name of the Mustache XML template used to render
-    # your BusinessObject
-    @template = ''
     # Fill this with default values for new instances of your BusinessObject
     @default_values = {}
 
     class << self
-      attr_accessor :object_name, :template, :default_values, :template_path
+      attr_accessor :object_name, :default_values
     end
 
     # Create a new BusinessObject subclass instance from the given hash of

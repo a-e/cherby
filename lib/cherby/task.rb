@@ -4,7 +4,6 @@ require 'cherby/business_object'
 module Cherby
   class Task < BusinessObject
     @object_name = 'Task'
-    @template = 'task'
     @default_values = {
       :status             => "New",
     }

@@ -1,5 +1,4 @@
 require 'date'
-require 'mustache'
 require 'cherby/business_object'
 require 'cherby/task'
 require 'cherby/journal_note'
@@ -8,7 +7,6 @@ module Cherby
   # Wrapper for Cherwell incident objects.
   class Incident < BusinessObject
     @object_name = 'Incident'
-    @template = 'incident'
     @default_values = {
       :service            => "Auto Generated",
       :service_group      => "Auto Generated",

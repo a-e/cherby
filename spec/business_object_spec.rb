@@ -4,19 +4,16 @@ require 'cherby/business_object'
 # Some BusinessObject subclasses to test with
 class MySubclass < Cherby::BusinessObject
   @object_name = 'MySubclass'
-  @template = 'test/simple'
   @default_values = {}
 end
 
 class MySubclassNoTemplate < Cherby::BusinessObject
   @object_name = 'MySubclassNoTemplate'
-  @template = ''
   @default_values = {}
 end
 
 class MySubclassNoTemplateFile < Cherby::BusinessObject
   @object_name = 'MySubclassNoTemplateFile'
-  @template = 'no_such_file'
   @default_values = {}
 end
 
@@ -29,20 +26,6 @@ describe Cherby::BusinessObject do
         last_name = obj.dom.css("BusinessObject[@Name=MySubclass] Field[@Name=Last]").first
         first_name.content.should == "Eric"
         last_name.content.should == "Idle"
-      end
-
-      it "raises an exception when no template is provided" do
-        pending("NA")
-        lambda do
-          MySubclassNoTemplate.create
-        end.should raise_error(RuntimeError, /No template defined/)
-      end
-
-      it "raises an exception if the template file is nonexistent" do
-        pending("NA")
-        lambda do
-          MySubclassNoTemplateFile.create
-        end.should raise_error(Errno::ENOENT, /No such file/)
       end
     end #create
 

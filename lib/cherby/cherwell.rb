@@ -231,7 +231,7 @@ module Cherby
     # ex.
     #     get_object_definition('Incident')
     #
-    # TODO: Use this as the basis for building templates, intead of mustache
+    # TODO: Use this as the basis for building templates?
     #
     def get_object_definition(object_type)
       result = {}
