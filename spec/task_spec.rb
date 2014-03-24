@@ -63,8 +63,8 @@ module Cherby
         it "adds a note to the Task" do
           task = Task.new(@task_xml)
           journal_note = JournalNote.create({
-            :details => 'New note on task',
-            :last_mod_date_time => DateTime.now,
+            'Details' => 'New note on task',
+            'LastModDateTime' => DateTime.now,
           })
           task.add_journal_note(journal_note)
           task['CompletionDetails'].should =~ /New note on task/

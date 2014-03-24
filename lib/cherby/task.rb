@@ -29,7 +29,7 @@ module Cherby
     def add_journal_note(journal_note)
       message = "\n============================\n" + \
         "Comment added #{journal_note.mod_s} by #{journal_note['CreatedBy']}: " + \
-        journal_note['Details'] + "\n\n"
+        journal_note['Details'].to_s + "\n\n"
       self['CompletionDetails'] = self['CompletionDetails'] + message
     end
   end

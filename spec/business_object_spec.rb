@@ -24,7 +24,7 @@ describe Cherby::BusinessObject do
   context "Class methods" do
     describe "#create" do
       it "sets options in the DOM" do
-        obj = MySubclass.create({:first_name => 'Eric', :last_name => 'Idle'})
+        obj = MySubclass.create({'First' => 'Eric', 'Last' => 'Idle'})
         first_name = obj.dom.css("BusinessObject[@Name=MySubclass] Field[@Name=First]").first
         last_name = obj.dom.css("BusinessObject[@Name=MySubclass] Field[@Name=Last]").first
         first_name.content.should == "Eric"
@@ -32,12 +32,14 @@ describe Cherby::BusinessObject do
       end
 
       it "raises an exception when no template is provided" do
+        pending("NA")
         lambda do
           MySubclassNoTemplate.create
         end.should raise_error(RuntimeError, /No template defined/)
       end
 
       it "raises an exception if the template file is nonexistent" do
+        pending("NA")
         lambda do
           MySubclassNoTemplateFile.create
         end.should raise_error(Errno::ENOENT, /No such file/)
@@ -94,7 +96,7 @@ describe Cherby::BusinessObject do
 
     describe "#[]" do
       it "returns the value in the named field" do
-        obj = MySubclass.create({:first_name => 'Eric', :last_name => 'Idle'})
+        obj = MySubclass.create({'First' => 'Eric', 'Last' => 'Idle'})
         obj['First'].should == 'Eric'
         obj['Last'].should == 'Idle'
       end
@@ -102,11 +104,17 @@ describe Cherby::BusinessObject do
 
     describe "#[]=" do
       it "puts a value in the named field" do
-        obj = MySubclass.create({:first_name => 'Eric', :last_name => 'Idle'})
+        obj = MySubclass.create({'First' => 'Eric', 'Last' => 'Idle'})
         obj['First'] = 'Terry'
         obj['Last'] = 'Jones'
         obj['First'].should == 'Terry'
         obj['Last'].should == 'Jones'
+      end
+
+      it "creates a new field if it doesn't exist" do
+        obj = MySubclass.create({'First' => 'Eric', 'Last' => 'Idle'})
+        obj['Middle'] = 'Something'
+        obj['Middle'].should == 'Something'
       end
     end #[]=
 
@@ -116,12 +124,12 @@ describe Cherby::BusinessObject do
         # (otherwise the date won't compare equal later)
         now = DateTime.parse(DateTime.now.to_s)
 
-        obj = MySubclass.create({:last_mod_date_time => now})
+        obj = MySubclass.create({'LastModDateTime' => now})
         obj.modified.should == now
       end
 
       it "BusinessObject with an invalid LastModDateTime value" do
-        obj = MySubclass.create({:last_mod_date_time => 'bogus'})
+        obj = MySubclass.create({'LastModDateTime' => 'bogus'})
         lambda do
           obj.modified
         end.should raise_error(RuntimeError, /Cannot parse LastModDateTime: 'bogus'/)
@@ -148,8 +156,8 @@ describe Cherby::BusinessObject do
     describe "#newer_than?" do
       before(:each) do
         @now = DateTime.now
-        @older = MySubclass.create({:last_mod_date_time => (@now - 1)})
-        @newer = MySubclass.create({:last_mod_date_time => @now})
+        @older = MySubclass.create({'LastModDateTime' => (@now - 1)})
+        @newer = MySubclass.create({'LastModDateTime' => @now})
       end
 
       it "true when this one was modified more recently than another" do
@@ -185,8 +193,11 @@ describe Cherby::BusinessObject do
         first_node.inner_html.should == 'Eric'
       end
 
-      it "returns nil when a Field with the given Name is not found" do
-        @obj.get_field_node('Bogus').should be_nil
+      it "creates a new Field if it doesn't exist" do
+        middle_node = @obj.get_field_node('Middle')
+        middle_node.should be_a(Nokogiri::XML::Node)
+        middle_node.attr('Name').should == 'Middle'
+        middle_node.inner_html.should == ''
       end
     end #get_field_node
 

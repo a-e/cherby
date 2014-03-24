@@ -191,10 +191,10 @@ describe Cherby::Cherwell do
     before(:each) do
       @public_id = '62521'
       @incident_data = {
-        :incident_id => @public_id,
-        :service => 'Consulting Services',
-        :sub_category => 'New/Modified Functionality',
-        :priority => '4',
+        'IncidentID' => @public_id,
+        'Service' => 'Consulting Services',
+        'SubCategory' => 'New/Modified Functionality',
+        'Priority' => '4',
       }
       @incident = Cherby::Incident.create(@incident_data)
       @cherwell.stub(:last_error => nil)
@@ -218,8 +218,8 @@ describe Cherby::Cherwell do
     before(:each) do
       @public_id = '90210'
       @task_data = {
-        :task_id => @public_id,
-        :parent_id => '90000'
+        'TaskID' => @public_id,
+        'ParentID' => '90000'
       }
       @task = Cherby::Task.create(@task_data)
       @cherwell.stub(:last_error => nil)
@@ -242,9 +242,9 @@ describe Cherby::Cherwell do
   describe "#create_incident" do
     before(:each) do
       @incident_data = {
-        :service => 'Consulting Services',
-        :sub_category => 'New/Modified Functionality',
-        :priority => '4',
+        'Service' => 'Consulting Services',
+        'SubCategory' => 'New/Modified Functionality',
+        'Priority' => '4',
       }
       @public_id = '54321'
     end

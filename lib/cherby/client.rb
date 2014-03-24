@@ -72,8 +72,10 @@ module Cherby
     #   # or a Hash of arguments:
     #   client.login(:userId => 'sisko', :password => 'baseball')
     #
-    #   client.get_business_object_definition(
-    #     :nameOrId => 'JournalNote')
+    #   # Get a BusinessObject definition with positional arguments:
+    #   client.get_business_object_definition('JournalNote')
+    #   # or a Hash of arguments:
+    #   client.get_business_object_definition(:nameOrId => 'JournalNote')
     #
     def method_missing(method, *args, &block)
       if known_methods.include?(method)

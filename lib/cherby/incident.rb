@@ -64,7 +64,7 @@ module Cherby
     def journal_notes
       css = "Relationship[@Name='Incident has Notes']" +
             " BusinessObject[@Name=JournalNote]"
-      @notes ||= @dom.css(css).map do |element|
+      return @dom.css(css).map do |element|
         JournalNote.new(element.to_xml)
       end
     end
@@ -74,16 +74,19 @@ module Cherby
       # Bail out if this incident doesn't actually exist
       return nil if !exists?
       task = Task.create({
-        :parent_public_id => self['IncidentID'],
-        :parent_type_name => 'Incident',
-        :task_type => 'Action',
-        :task_description => task_description,
-        :notes => task_notes,
-        :owned_by => owned_by,
+        'ParentPublicID' => self['IncidentID'],
+        'ParentTypeName' => 'Incident',
+        'TaskType' => 'Action',
+        'TaskDescription' => task_description,
+        'Notes' => task_notes,
+        'OwnedBy' => owned_by,
       })
-      relationship_xml = Mustache.render_file('task_relationship',
-        {:task_business_object => task.dom.css('BusinessObject').to_xml})
-      @dom.css('RelationshipList').first.add_child(relationship_xml)
+      rel_node = Nokogiri::XML::Node.new('Relationship', @dom)
+      rel_node['Name'] = 'Incident Has Tasks'
+      rel_node['TargetObjectName'] = 'Task'
+      rel_node['Type'] = 'Owns'
+      rel_node.inner_html = task.dom.css('BusinessObject').to_xml
+      @dom.at_css('RelationshipList').add_child(rel_node)
     end
 
     # Add a new JournalNote to this incident.
@@ -93,9 +96,12 @@ module Cherby
     #
     def add_journal_note(journal_note)
       return nil if !exists?
-      relationship_xml = Mustache.render_file('journal_note_relationship',
-        {:note_business_object => journal_note.dom.css('BusinessObject').to_xml})
-      @dom.css('RelationshipList').first.add_child(relationship_xml)
+      rel_node = Nokogiri::XML::Node.new('Relationship', @dom)
+      rel_node['Name'] = 'Incident has Notes'
+      rel_node['TargetObjectName'] = 'JournalNote'
+      rel_node['Type'] = 'Owns'
+      rel_node.inner_html = journal_note.dom.css('BusinessObject').to_xml
+      @dom.at_css('RelationshipList').add_child(rel_node)
     end
 
     # Return True if this Incident has important fields differing from the

@@ -18,19 +18,20 @@ module Cherby
     end
 
     # Create a new BusinessObject subclass instance from the given hash of
-    # options.
-    # FIXME: Make this method accept CamelCase string field names instead of
-    # just :snake_case symbols, as part of a larger strategy to treat field names
-    # consistently throughout (using Cherwell's CamelCase strings everywhere)
-    def self.create(options={})
-      if self.template.empty?
-        # TODO: Exception subclass
-        raise RuntimeError, "No template defined for BusinessObject"
-      end
-      Mustache.template_path = File.join(File.dirname(__FILE__), 'templates')
-      xml = Mustache.render_file(
-        self.template, self.default_values.merge(options))
-      return self.new(xml)
+    # 'FieldName' => 'Field Value'.
+    def self.create(fields={})
+      type_name = self.object_name
+      builder = Nokogiri::XML::Builder.new {
+        BusinessObject_('Name' => type_name, 'RecID' => 'TODO') {
+          FieldList_ {
+            fields.each { |name, value|
+              Field_(value, 'Name' => name)
+            }
+          }
+          RelationshipList_ { }
+        }
+      }
+      return self.new(builder.to_xml)
     end
 
     # Instance methods
@@ -50,7 +51,13 @@ module Cherby
     # Return the node of the field with the given name.
     def get_field_node(field_name)
       selector = "BusinessObject > FieldList > Field[@Name=#{field_name}]"
-      return @dom.css(selector).first
+      element = @dom.css(selector).first
+      if element.nil?
+        element = Nokogiri::XML::Node.new('Field', @dom)
+        element['Name'] = field_name
+        @dom.at_css("BusinessObject > FieldList").add_child(element)
+      end
+      return element
     end
 
     # Return a hash of field names and values
@@ -101,7 +108,7 @@ module Cherby
     # (LastModDateTime converted to DateTime)
     def modified
       last_mod = self['LastModDateTime']
-      if last_mod.nil?
+      if last_mod.nil? || last_mod.empty?
         raise RuntimeError, "BusinessObject is missing LastModDateTime field."
       end
       begin
@@ -155,5 +162,6 @@ module Cherby
         self[field] = other_object[field]
       end
     end
+
   end
 end

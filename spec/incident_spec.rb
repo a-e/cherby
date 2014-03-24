@@ -80,7 +80,7 @@ module Cherby
       describe "#add_journal_note" do
         it "adds a JournalNote" do
           journal_note = JournalNote.create({
-            :details => 'New note on incident',
+            'Details' => 'New note on incident',
           })
           @incident.add_journal_note(journal_note)
           last_journal_note = @incident.journal_notes.last
