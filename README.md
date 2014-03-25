@@ -1,12 +1,27 @@
 Cherby
 ======
+[![Build Status](https://secure.travis-ci.org/a-e/cherby.png?branch=dev)](http://travis-ci.org/a-e/cherby)
 
 Cherby is a Ruby wrapper for the
 [Cherwell Web Service](http://cherwellsupport.com/webhelp/cherwell/index.htm#1971.htm).
 
-[Full documentation is on rdoc.info](http://rubydoc.info/github/a-e/cherby/master/frames).
+- [Documentation](http://rubydoc.info/github/a-e/cherby/master/frames)
+- [Gem](http://rubygems.org/gems/cherby)
+- [Status](https://travis-ci.org/a-e/cherby)
 
-[![Build Status](https://secure.travis-ci.org/a-e/cherby.png?branch=dev)](http://travis-ci.org/a-e/cherby)
+
+Install
+-------
+
+Just do:
+
+    $ gem install cherby
+
+Or add:
+
+    gem 'cherby'
+
+to your project's Gemfile or gemspec.
 
 
 Usage
