@@ -3,7 +3,6 @@ require 'simplecov'
 SimpleCov.start if ENV['COVERAGE']
 
 require 'rspec'
-require 'mustache'
 
 ROOT_DIR = File.absolute_path(File.join(File.dirname(__FILE__), '..'))
 LIB_DIR = File.join(ROOT_DIR, 'lib')
@@ -14,19 +13,23 @@ CONFIG_FILE = File.join(ROOT_DIR, 'config', 'test-config.yml')
 CHERWELL_WSDL = File.join(DATA_DIR, 'cherwell.wsdl')
 $LOAD_PATH.unshift(LIB_DIR)
 
-class XMLTemplate < Mustache
-  self.template_path = XML_DIR
-end
-
 RSpec.configure do |config|
-  def xml_envelope(body)
-    return XMLTemplate.render_file('soap_envelope', :body => body)
-  end
-
   def xml_response(method, body)
-    wrapped_body = XMLTemplate.render_file(
-      'method_response_result', :method => method, :body => body)
-    return xml_envelope(wrapped_body)
+    env_attrs = {
+      'xmlns:soap' => "http://schemas.xmlsoap.org/soap/envelope/",
+      'xmlns:xsi' => "http://www.w3.org/2001/XMLSchema-instance",
+      'xmlns:xsd' => "http://www.w3.org/2001/XMLSchema",
+    }
+    builder = Nokogiri::XML::Builder.new do |xml|
+      xml['soap'].Envelope(env_attrs) do |env|
+        env.Body do
+          env.send(:"#{method}Response", 'xmlns' => 'http://cherwellsoftware.com') do
+            env.send(:"#{method}Result", body)
+          end
+        end
+      end
+    end
+    return builder.to_xml
   end
 
   def savon_response(method, body)
