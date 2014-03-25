@@ -5,6 +5,7 @@ Cherby
 Cherby is a Ruby wrapper for the
 [Cherwell Web Service](http://cherwellsupport.com/webhelp/cherwell/index.htm#1971.htm).
 
+- [Source](https://github.com/a-e/cherby)
 - [Documentation](http://rubydoc.info/github/a-e/cherby/master/frames)
 - [Gem](http://rubygems.org/gems/cherby)
 - [Status](https://travis-ci.org/a-e/cherby)
