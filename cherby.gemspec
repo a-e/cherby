@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name = "cherby"
-  s.version = "0.0.1"
+  s.version = "0.0.2"
   s.summary = "Cherwell-Ruby bridge"
   s.description = <<-EOS
     Cherby is a Ruby wrapper for the Cherwell Web Service.
