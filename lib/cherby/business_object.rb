@@ -35,6 +35,24 @@ module Cherby
     attr_reader :dom
 
     # Create a new BusinessObject instance from the given XML string.
+    #
+    # @param [String] xml
+    #   XML for the BusinessObject to create. The XML must contain a
+    #   `BusinessObject` element, with a `FieldList` element within it,
+    #   containing zero or more `Field` elements, each having a `Name`
+    #   attribute, and a string value. For example:
+    #
+    #       <BusinessObject>
+    #         <FieldList>
+    #           <Field Name="FirstName">Steven</Field>
+    #           <Field Name="LastName">Moffat</Field>
+    #           [...]
+    #         </FieldList>
+    #       </BusinessObject>
+    #
+    # @raise [Cherby::BadFormat]
+    #   If the XML DOM's structure is incorrect
+    #
     def initialize(xml)
       @dom = Nokogiri::XML(xml)
       check_dom_format!
@@ -57,7 +75,11 @@ module Cherby
       return true
     end
 
-    # Return the XML representation of this BusinessObject
+    # Return the XML representation of this BusinessObject.
+    #
+    # @return [String]
+    #   The BusinessObject's XML representation
+    #
     def to_xml
       return @dom.to_xml
     end
@@ -70,6 +92,9 @@ module Cherby
     # @return [Nokogiri::XML::Node, nil]
     #   The node for the `Field` element, or `nil` if no Field
     #   with the given `Name` exists.
+    #
+    # @raise [Cherby::BadFormat]
+    #   If the XML DOM's structure is incorrect
     #
     def get_field_node(field_name)
       check_dom_format!
