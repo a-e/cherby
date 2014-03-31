@@ -77,10 +77,25 @@ describe Cherby::Cherwell do
     it "returns a Cherby::Incident instance" do
       incident_id = '51949'
       incident_xml = File.read(File.join(DATA_DIR, 'incident.xml'))
+      @cherwell.stub(:last_error => nil)
       @cherwell.stub(:get_object_xml).
         with('Incident', incident_id).
         and_return(incident_xml)
       @cherwell.incident(incident_id).should be_a(Cherby::Incident)
+    end
+
+    it "raises a CherbyError if incident is not found" do
+      incident_id = '99999'
+      empty_xml = File.read(File.join(DATA_DIR, 'empty.xml'))
+      @cherwell.stub(:get_object_xml).
+        with('Incident', incident_id).
+        and_return(empty_xml)
+
+      error = "Specified Business Object not found"
+      @cherwell.stub(:last_error => error)
+      lambda do
+        @cherwell.incident(incident_id)
+      end.should raise_error(Cherby::CherbyError, error)
     end
   end #incident
 
@@ -88,10 +103,25 @@ describe Cherby::Cherwell do
     it "returns a Cherby::Task instance" do
       task_id = '12345'
       task_xml = File.read(File.join(DATA_DIR, 'task.xml'))
+      @cherwell.stub(:last_error => nil)
       @cherwell.stub(:get_object_xml).
         with('Task', task_id).
         and_return(task_xml)
       @cherwell.task(task_id).should be_a(Cherby::Task)
+    end
+
+    it "raises a CherbyError if task is not found" do
+      task_id = '99999'
+      empty_xml = File.read(File.join(DATA_DIR, 'empty.xml'))
+      @cherwell.stub(:get_object_xml).
+        with('Task', task_id).
+        and_return(empty_xml)
+
+      error = "Specified Business Object not found"
+      @cherwell.stub(:last_error => error)
+      lambda do
+        @cherwell.task(task_id)
+      end.should raise_error(Cherby::CherbyError, error)
     end
   end #task
 
@@ -141,15 +171,6 @@ describe Cherby::Cherwell do
       )
       result = @cherwell.get_object_xml(@name, @public_id)
       result.should == xml
-    end
-
-    it "raises a Cherby::SoapError if a Savon::Error occurs" do
-      soap_fault = Savon::Error.new("Kaboom")
-      @cherwell.client.stub(:call).and_raise(soap_fault)
-      lambda do
-        @cherwell.get_object_xml(@name, @public_id)
-      end.should raise_error(
-        Cherby::SoapError, /Kaboom/)
     end
   end #get_object_xml
 

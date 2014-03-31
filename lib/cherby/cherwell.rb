@@ -41,7 +41,7 @@ module Cherby
     # @return [Boolean]
     #   `true` if login was successful
     #
-    # @raise [LoginFailed]
+    # @raise [Cherby::LoginFailed]
     #   If login failed for any reason
     #
     def login(username=nil, password=nil)
@@ -53,7 +53,7 @@ module Cherby
         response = @client.call(:login, :message => creds)
       rescue => e
         # This can happen if a bad URL is given
-        raise LoginFailed, e.message
+        raise Cherby::LoginFailed, e.message
       else
         if response.body[:login_response][:login_result] == true
           # FIXME: Using the workaround described in this issue:
@@ -66,7 +66,7 @@ module Cherby
           return true
         # This can happen if invalid credentials are given
         else
-          raise LoginFailed, "Cherwell returned false status"
+          raise Cherby::LoginFailed, "Cherwell returned false status"
         end
       end
     end
@@ -85,9 +85,18 @@ module Cherby
     #
     # @return [Incident]
     #
+    # @raise [Cherby::NotFound]
+    #   If an error occurs when fetching the incident.
+    #   The `message` attribute includes the error from Cherwell.
+    #
     def incident(id)
       incident_xml = get_object_xml('Incident', id)
-      return Incident.new(incident_xml.to_s)
+      error = self.last_error
+      if error
+        raise Cherby::NotFound.new(error)
+      else
+        return Incident.new(incident_xml.to_s)
+      end
     end
 
     # Get the Cherwell task with the given public ID, and return a Task
@@ -95,9 +104,18 @@ module Cherby
     #
     # @return [Task]
     #
+    # @raise [Cherby::NotFound]
+    #   If an error occurs when fetching the task.
+    #   The `message` attribute includes the error from Cherwell.
+    #
     def task(id)
       task_xml = get_object_xml('Task', id)
-      return Task.new(task_xml.to_s)
+      error = self.last_error
+      if error
+        raise Cherby::NotFound.new(error)
+      else
+        return Task.new(task_xml.to_s)
+      end
     end
 
     # Get a business object based on its public ID or RecID, and return the
@@ -127,6 +145,9 @@ module Cherby
     # @return [String]
     #   Raw XML response string.
     #
+    # @raise [Cherby::SoapError]
+    #   If a Savon::SOAPFault occurs when making the request.
+    #
     def get_object_xml(object_type, id)
       # Assemble the SOAP body
       body = {:busObNameOrId => object_type}
@@ -143,13 +164,19 @@ module Cherby
 
       begin
         result = @client.call_wrap(method, body)
-      rescue Savon::Error => e
-        raise SoapError, e.message
+      rescue Savon::SOAPFault => e
+        #raise Cherby::SoapError.new(e.http.body)
+        raise e
       else
-        return result
+        return result.to_s
       end
     end
 
+    # Get a BusinessObject instance
+    def get_business_object(object_type, id)
+      xml = self.get_object_xml(object_type, id)
+      return BusinessObject.new(xml)
+    end
 
     # Update a given Cherwell object by submitting its XML to the SOAP
     # interface.

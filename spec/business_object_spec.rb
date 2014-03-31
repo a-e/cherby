@@ -75,13 +75,43 @@ describe Cherby::BusinessObject do
         last_name.content.should == "Idle"
       end
 
+      it "raises BadFormat if XML is missing FieldList" do
+        xml = %Q{
+          <BusinessObject Name="MySubclass">
+            <Whatever/>
+          </BusinessObject>
+        }
+        lambda do
+          @obj = MySubclass.new(xml)
+        end.should raise_error(
+          Cherby::BadFormat, /missing 'BusinessObject > FieldList'/)
+      end
+
+      it "raises BadFormat if XML is missing BusinessObject" do
+        xml = %Q{
+          <Whatever Name="MySubclass"/>
+        }
+        lambda do
+          @obj = MySubclass.new(xml)
+        end.should raise_error(
+          Cherby::BadFormat, /missing 'BusinessObject'/)
+      end
     end #initialize
+
+    describe "#check_dom_format!" do
+      it "TODO"
+    end #check_dom_format!
 
     describe "#[]" do
       it "returns the value in the named field" do
         obj = MySubclass.create({'First' => 'Eric', 'Last' => 'Idle'})
         obj['First'].should == 'Eric'
         obj['Last'].should == 'Idle'
+      end
+
+      it "returns nil if the field doesn't exist" do
+        obj = MySubclass.create({'First' => 'Eric', 'Last' => 'Idle'})
+        obj['Middle'].should be_nil
       end
     end #[]
 
@@ -169,6 +199,11 @@ describe Cherby::BusinessObject do
         @obj = MySubclass.new(xml)
       end
 
+      it "checks the DOM format" do
+        @obj.should_receive(:check_dom_format!).and_return(true)
+        @obj.get_field_node('First')
+      end
+
       it "returns the Field having the given Name" do
         first_node = @obj.get_field_node('First')
         first_node.should be_a(Nokogiri::XML::Node)
@@ -176,13 +211,44 @@ describe Cherby::BusinessObject do
         first_node.inner_html.should == 'Eric'
       end
 
-      it "creates a new Field if it doesn't exist" do
+      it "returns nil if the field doesn't exist" do
         middle_node = @obj.get_field_node('Middle')
+        middle_node.should be_nil
+      end
+    end #get_field_node
+
+    describe "#get_or_create_field_node" do
+      before(:each) do
+        xml = %Q{
+          <BusinessObject Name="MySubclass">
+            <FieldList>
+              <Field Name="First">Eric</Field>
+              <Field Name="Last">Idle</Field>
+            </FieldList>
+          </BusinessObject>
+        }
+        @obj = MySubclass.new(xml)
+      end
+
+      it "checks the DOM format" do
+        @obj.should_receive(:check_dom_format!).and_return(true)
+        @obj.get_or_create_field_node('First')
+      end
+
+      it "returns the Field having the given Name" do
+        first_node = @obj.get_or_create_field_node('First')
+        first_node.should be_a(Nokogiri::XML::Node)
+        first_node.attr('Name').should == 'First'
+        first_node.inner_html.should == 'Eric'
+      end
+
+      it "creates a new Field if it doesn't exist" do
+        middle_node = @obj.get_or_create_field_node('Middle')
         middle_node.should be_a(Nokogiri::XML::Node)
         middle_node.attr('Name').should == 'Middle'
         middle_node.inner_html.should == ''
       end
-    end #get_field_node
+    end #get_or_create_field_node
 
     describe "#field_values" do
       before(:each) do

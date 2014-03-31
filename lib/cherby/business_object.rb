@@ -34,9 +34,27 @@ module Cherby
 
     attr_reader :dom
 
-    # Create a new instance populated with the given XML string
+    # Create a new BusinessObject instance from the given XML string.
     def initialize(xml)
       @dom = Nokogiri::XML(xml)
+      check_dom_format!
+    end
+
+    # Ensure the @dom is in the expected format for BusinessObjects.
+    #
+    # @raise [Cherby::BadFormat]
+    #   If the DOM's structure is incorrect
+    #
+    def check_dom_format!
+      # Ensure XML is in expected format for BusinessObjects
+      if @dom.css('BusinessObject').empty?
+        raise Cherby::BadFormat.new(
+          "BusinessObject XML is missing 'BusinessObject' element")
+      elsif @dom.css('BusinessObject > FieldList').empty?
+        raise Cherby::BadFormat.new(
+          "BusinessObject XML is missing 'BusinessObject > FieldList' element")
+      end
+      return true
     end
 
     # Return the XML representation of this BusinessObject
@@ -45,9 +63,30 @@ module Cherby
     end
 
     # Return the node of the field with the given name.
+    #
+    # @param [String] field_name
+    #   The `Name` attribute of the `Field` element to get.
+    #
+    # @return [Nokogiri::XML::Node, nil]
+    #   The node for the `Field` element, or `nil` if no Field
+    #   with the given `Name` exists.
+    #
     def get_field_node(field_name)
+      check_dom_format!
       selector = "BusinessObject > FieldList > Field[@Name=#{field_name}]"
-      element = @dom.css(selector).first
+      return @dom.css(selector).first
+    end
+
+    # Get a `Field` node with the given name, or create one if it doesn't exist.
+    #
+    # @param [String] field_name
+    #   The `Name` attribute of the `Field` element to get or create.
+    #
+    # @return [Nokogiri::XML::Node]
+    #   The node for the existing or new `Field` element.
+    #
+    def get_or_create_field_node(field_name)
+      element = get_field_node(field_name)
       if element.nil?
         element = Nokogiri::XML::Node.new('Field', @dom)
         element['Name'] = field_name
@@ -126,19 +165,16 @@ module Cherby
     end
 
     # Return the content in the field with the given name.
-    # TODO: Exception for unknown field name
     def [](field_name)
-      if field = get_field_node(field_name)
-        return field.content
-      end
+      field = get_field_node(field_name)
+      return field.content if field
+      return nil
     end
 
     # Modify the content in the field with the given name.
-    # TODO: Exception for unknown field name
     def []=(field_name, value)
-      if field = get_field_node(field_name)
-        field.content = value.to_s
-      end
+      field = get_or_create_field_node(field_name)
+      field.content = value.to_s
     end
 
     # Copy designated fields from one BusinessObject to another.

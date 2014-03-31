@@ -7,6 +7,7 @@ module Cherby
   # Wrapper for Cherwell incident objects.
   class Incident < BusinessObject
     @object_name = 'Incident'
+    # FIXME: Rename these and make use of them?
     @default_values = {
       :service            => "Auto Generated",
       :service_group      => "Auto Generated",
