@@ -93,7 +93,7 @@ module Cherby
       incident_xml = get_object_xml('Incident', id)
       error = self.last_error
       if error
-        raise Cherby::NotFound.new(error)
+        raise Cherby::NotFound.new("Cannot find Incident '#{id}': #{error}")
       else
         return Incident.new(incident_xml.to_s)
       end
@@ -112,7 +112,7 @@ module Cherby
       task_xml = get_object_xml('Task', id)
       error = self.last_error
       if error
-        raise Cherby::NotFound.new(error)
+        raise Cherby::NotFound.new("Cannot find Task '#{id}': #{error}")
       else
         return Task.new(task_xml.to_s)
       end
@@ -165,8 +165,8 @@ module Cherby
       begin
         result = @client.call_wrap(method, body)
       rescue Savon::SOAPFault => e
-        #raise Cherby::SoapError.new(e.http.body)
-        raise e
+        raise Cherby::SoapError.new(
+          "SOAPFault from method '#{method}'", e.http)
       else
         return result.to_s
       end

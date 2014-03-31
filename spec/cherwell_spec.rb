@@ -84,7 +84,7 @@ describe Cherby::Cherwell do
       @cherwell.incident(incident_id).should be_a(Cherby::Incident)
     end
 
-    it "raises a CherbyError if incident is not found" do
+    it "raises Cherby::NotFound if incident is not found" do
       incident_id = '99999'
       empty_xml = File.read(File.join(DATA_DIR, 'empty.xml'))
       @cherwell.stub(:get_object_xml).
@@ -95,7 +95,7 @@ describe Cherby::Cherwell do
       @cherwell.stub(:last_error => error)
       lambda do
         @cherwell.incident(incident_id)
-      end.should raise_error(Cherby::CherbyError, error)
+      end.should raise_error(Cherby::NotFound, /#{error}/)
     end
   end #incident
 
@@ -110,7 +110,7 @@ describe Cherby::Cherwell do
       @cherwell.task(task_id).should be_a(Cherby::Task)
     end
 
-    it "raises a CherbyError if task is not found" do
+    it "raises a Cherby::NotFound if task is not found" do
       task_id = '99999'
       empty_xml = File.read(File.join(DATA_DIR, 'empty.xml'))
       @cherwell.stub(:get_object_xml).
@@ -121,7 +121,7 @@ describe Cherby::Cherwell do
       @cherwell.stub(:last_error => error)
       lambda do
         @cherwell.task(task_id)
-      end.should raise_error(Cherby::CherbyError, error)
+      end.should raise_error(Cherby::NotFound, /#{error}/)
     end
   end #task
 
