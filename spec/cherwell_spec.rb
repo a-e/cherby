@@ -172,7 +172,43 @@ describe Cherby::Cherwell do
       result = @cherwell.get_object_xml(@name, @public_id)
       result.should == xml
     end
+
+    it "raises Cherby::SoapError if Savon::SOAPFault occurs" do
+      soap_fault = Savon::SOAPFault.new('fake-http', 'fake-nori')
+      @cherwell.client.stub(:call_wrap).and_raise(soap_fault)
+      lambda do
+        @cherwell.get_object_xml(@name, @public_id)
+      end.should raise_error { |ex|
+        ex.should be_a(Cherby::SoapError)
+        ex.message.should =~ /SOAPFault from method/
+        ex.http.should == 'fake-http'
+      }
+    end
   end #get_object_xml
+
+  describe "#get_business_object" do
+    before(:each) do
+      @name = 'Thing'
+      @rec_id = '12345678901234567890123456789012'
+      @public_id = '12345'
+      @business_object_xml = %Q{
+        <BusinessObject>
+          <FieldList>
+            <Field Name="Name">#{@name}</Field>
+            <Field Name="RecID">#{@rec_id}</Field>
+          </FieldList>
+        </BusinessObject>
+      }
+      @cherwell.stub(:get_object_xml).
+        with(@name, @public_id).
+        and_return(@business_object_xml)
+    end
+
+    it "returns a BusinessObject instance" do
+      result = @cherwell.get_business_object(@name, @public_id)
+      result.should be_a(Cherby::BusinessObject)
+    end
+  end
 
   describe "#update_object_xml" do
     before(:each) do
