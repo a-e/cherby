@@ -2,24 +2,22 @@ require_relative 'spec_helper'
 require 'cherby/business_object'
 
 # Some BusinessObject subclasses to test with
-class MySubclass < Cherby::BusinessObject
-  @object_name = 'MySubclass'
-  @default_values = {}
-end
-
-class MySubclassNoTemplate < Cherby::BusinessObject
-  @object_name = 'MySubclassNoTemplate'
-  @default_values = {}
-end
-
-class MySubclassNoTemplateFile < Cherby::BusinessObject
-  @object_name = 'MySubclassNoTemplateFile'
-  @default_values = {}
-end
+class MySubclass < Cherby::BusinessObject; end
 
 describe Cherby::BusinessObject do
   context "Class methods" do
+    describe "#object_type" do
+      it "returns the plain class name as a string" do
+        MySubclass.object_type.should == 'MySubclass'
+      end
+    end #object_type
+
     describe "#create" do
+      it "uses object_type as the BusinessObject `Name` attribute" do
+        obj = MySubclass.create({})
+        obj.dom.css("BusinessObject").first.attr('Name').should == 'MySubclass'
+      end
+
       it "sets options in the DOM" do
         obj = MySubclass.create({'First' => 'Eric', 'Last' => 'Idle'})
         first_name = obj.dom.css("BusinessObject[@Name=MySubclass] Field[@Name=First]").first
@@ -58,6 +56,13 @@ describe Cherby::BusinessObject do
 
 
   context "Instance methods" do
+    describe "#object_type" do
+      it "returns the plain class name as a string" do
+        obj = MySubclass.create({})
+        obj.object_type.should == 'MySubclass'
+      end
+    end #object_type
+
     describe "#initialize" do
       it "accepts an XML string" do
         xml = %Q{

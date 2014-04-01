@@ -6,18 +6,6 @@ require 'cherby/journal_note'
 module Cherby
   # Wrapper for Cherwell incident objects.
   class Incident < BusinessObject
-    @object_name = 'Incident'
-    # FIXME: Rename these and make use of them?
-    @default_values = {
-      :service            => "Auto Generated",
-      :service_group      => "Auto Generated",
-      :category           => "Auto Generated",
-      :sub_category       => "JIRA",
-      :impact             => "Inconvenience",
-      :urgency            => "Medium",
-      :priority           => "3",
-    }
-
     def id
       self['IncidentID']
     end
@@ -46,7 +34,7 @@ module Cherby
       self["SubcategoryNonHR"] = "JIRA"
     end
 
-    # Return Task instances for all tasks associated with this Incident
+    # Return Task instances for all tasks associated with this Incident.
     #
     # @return [Array<Task>]
     #
@@ -56,7 +44,7 @@ module Cherby
       end
     end
 
-    # Return all journal notes associated with this Incident.
+    # Return all JournalNotes associated with this Incident.
     #
     # @return [Array<JournalNote>]
     #

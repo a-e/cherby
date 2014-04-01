@@ -3,22 +3,27 @@ require 'nokogiri'
 module Cherby
   # Cherwell BusinessObject wrapper, with data represented as an XML DOM
   class BusinessObject
+    # Return the name of this class.
+    #
+    # @return [String]
+    #
+    def self.object_type
+      return self.name.split('::').last
+    end
 
-    # Override this with the value of the BusinessObject's 'Name' attribute
-    @object_name = ''
-    # Fill this with default values for new instances of your BusinessObject
-    @default_values = {}
-
-    class << self
-      attr_accessor :object_name, :default_values
+    # Return the name of this instance's class.
+    #
+    # @return [String]
+    #
+    def object_type
+      return self.class.object_type
     end
 
     # Create a new BusinessObject subclass instance from the given hash of
     # 'FieldName' => 'Field Value'.
     def self.create(fields={})
-      type_name = self.object_name
       builder = Nokogiri::XML::Builder.new {
-        BusinessObject_('Name' => type_name, 'RecID' => 'TODO') {
+        BusinessObject_('Name' => self.object_type, 'RecID' => 'TODO') {
           FieldList_ {
             fields.each { |name, value|
               Field_(value, 'Name' => name)
@@ -42,7 +47,7 @@ module Cherby
     #   containing zero or more `Field` elements, each having a `Name`
     #   attribute, and a string value. For example:
     #
-    #       <BusinessObject>
+    #       <BusinessObject Name="Customer">
     #         <FieldList>
     #           <Field Name="FirstName">Steven</Field>
     #           <Field Name="LastName">Moffat</Field>

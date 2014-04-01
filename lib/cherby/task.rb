@@ -3,11 +3,6 @@ require 'cherby/business_object'
 
 module Cherby
   class Task < BusinessObject
-    @object_name = 'Task'
-    @default_values = {
-      :status             => "New",
-    }
-
     def id
       self['TaskID']
     end
