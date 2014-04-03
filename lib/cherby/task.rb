@@ -2,11 +2,14 @@ require 'date'
 require 'cherby/business_object'
 
 module Cherby
+  # Wrapper for Cherwell task objects.
   class Task < BusinessObject
+    # Return this task's public ID.
     def id
       self['TaskID']
     end
 
+    # Return true if this task exists in Cherwell.
     def exists?
       return !id.to_s.empty?
     end

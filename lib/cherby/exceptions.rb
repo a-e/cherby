@@ -1,5 +1,7 @@
 module Cherby
+  # Base class for all Cherby custom exceptions
   class CherbyError < RuntimeError; end
+
   class LoginFailed < CherbyError; end
   class NotFound < CherbyError; end
   class BadFormat < CherbyError; end

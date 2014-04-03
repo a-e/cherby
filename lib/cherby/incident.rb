@@ -6,6 +6,7 @@ require 'cherby/journal_note'
 module Cherby
   # Wrapper for Cherwell incident objects.
   class Incident < BusinessObject
+    # Return the Incident's public ID
     def id
       self['IncidentID']
     end
