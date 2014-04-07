@@ -92,21 +92,6 @@ module Cherby
       @dom.at_css('RelationshipList').add_child(rel_node)
     end
 
-    # Return True if this Incident has important fields differing from the
-    # given Incident.
-    #
-    # @param [Incident] incident
-    #   The Incident to compare this one to.
-    #
-    # @return [Boolean]
-    #   `true` if the incidents differn `false` otherwise.
-    #
-    def differs_from?(incident)
-      return true if self['Status'] != incident['Status']
-      return true if self['JIRAID'] != incident['JIRAID']
-      return false
-    end
-
     # DO NOT REMOVE: use the follow code for code-gen of Cherwell consts
 =begin
     def extract_lines(css, l)

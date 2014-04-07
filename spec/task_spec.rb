@@ -37,28 +37,6 @@ module Cherby
         end
       end #exists?
 
-      describe "#differs_from?" do
-        it "false when compared with itself" do
-          task = Task.new(@task_xml)
-          task.differs_from?(task).should be_false
-        end
-
-        it "false when compared with a task with identical fields" do
-          task1 = Task.new(@task_xml)
-          task2 = Task.new(@task_xml)
-          task2.differs_from?(task1).should be_false
-        end
-
-        it "true if certain fields are different" do
-          task1 = Task.new(@task_xml)
-          task2 = Task.new(@task_xml)
-          task1['Status'] = 'New'
-          task2['Status'] = 'Assigned'
-          task1.differs_from?(task2).should be_true
-          task2.differs_from?(task1).should be_true
-        end
-      end #differs_from?
-
       describe "#add_journal_note" do
         it "adds a note to the Task" do
           task = Task.new(@task_xml)

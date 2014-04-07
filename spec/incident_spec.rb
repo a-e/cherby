@@ -87,22 +87,6 @@ module Cherby
           last_journal_note['Details'].should == 'New note on incident'
         end
       end #add_journal_note
-
-      describe "#differs_from?" do
-        it "false when comparing with self" do
-          @incident.differs_from?(@incident).should be_false
-        end
-        it "false when comparing with an identical Incident" do
-          incident2 = Cherby::Incident.new(@incident_xml)
-          incident2.differs_from?(@incident).should be_false
-        end
-        it "true if certain fields are different" do
-          incident2 = Cherby::Incident.new(@incident_xml)
-          @incident['Status'] = 'New'
-          incident2['Status'] = 'Assigned'
-          incident2.differs_from?(@incident).should be_true
-        end
-      end #differs_from?
     end # Instance methods
 
     context "Inherited instance methods" do

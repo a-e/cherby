@@ -14,12 +14,6 @@ module Cherby
       return !id.to_s.empty?
     end
 
-    # Return True if this Task has important fields differing from the given Task.
-    def differs_from?(task)
-      return true if self['Status'] != task['Status']
-      return false
-    end
-
     # Add a JournalNote to this Task. Since Tasks cannot directly have JournalNotes
     # associated with them, this just appends the note's content to the Technician Notes
     # field (aka 'CompletionDetails') in the Task.
