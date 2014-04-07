@@ -1,5 +1,6 @@
 require_relative 'spec_helper'
 require 'cherby/business_object'
+require 'cherby/exceptions'
 
 # Some BusinessObject subclasses to test with
 class MySubclass < Cherby::BusinessObject; end
@@ -80,7 +81,7 @@ describe Cherby::BusinessObject do
         last_name.content.should == "Idle"
       end
 
-      it "raises BadFormat if XML is missing FieldList" do
+      it "raises Cherby::BadFormat if XML is missing FieldList" do
         xml = %Q{
           <BusinessObject Name="MySubclass">
             <Whatever/>
@@ -92,7 +93,7 @@ describe Cherby::BusinessObject do
           Cherby::BadFormat, /missing 'BusinessObject > FieldList'/)
       end
 
-      it "raises BadFormat if XML is missing BusinessObject" do
+      it "raises Cherby::BadFormat if XML is missing BusinessObject" do
         xml = %Q{
           <Whatever Name="MySubclass"/>
         }
@@ -137,7 +138,7 @@ describe Cherby::BusinessObject do
     end #[]=
 
     describe "#modified" do
-      it "BusinessObject with a valid LastModDateTime value" do
+      it "returns the parsed LastModDateTime if it's a valid date/time string" do
         # Parse the string version of now in order to truncate extra precision
         # (otherwise the date won't compare equal later)
         now = DateTime.parse(DateTime.now.to_s)
@@ -146,14 +147,26 @@ describe Cherby::BusinessObject do
         obj.modified.should == now
       end
 
-      it "BusinessObject with an invalid LastModDateTime value" do
+      it "adjusts by default_tz_offset if LastModDateTime does not include an offset" do
+        # Current time, without timezone offset
+        now_str = DateTime.now.strftime('%Y-%m-%dT%H:%M:%S')
+        now = DateTime.parse(now_str)
+
+        obj = MySubclass.create({'LastModDateTime' => now_str})
+        # Test a bunch of different timezone offsets
+        [-7, -5, -2, 0, 1, 3, 4].each do |offset|
+          obj.modified(offset).should == now - Rational(offset, 24)
+        end
+      end
+
+      it "raises Cherby::BadFormat if LastModDateTime value is invalid" do
         obj = MySubclass.create({'LastModDateTime' => 'bogus'})
         lambda do
           obj.modified
-        end.should raise_error(RuntimeError, /Cannot parse LastModDateTime: 'bogus'/)
+        end.should raise_error(Cherby::BadFormat, /Cannot parse LastModDateTime: 'bogus'/)
       end
 
-      it "BusinessObject without a LastModDateTime field" do
+      it "raises Cherby::MissingData if LastModDateTime is empty" do
         xml = %Q{
           <BusinessObject Name="MySubclass">
             <FieldList>

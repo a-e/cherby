@@ -4,6 +4,7 @@ module Cherby
 
   class LoginFailed < CherbyError; end
   class NotFound < CherbyError; end
+  class MissingData < CherbyError; end
   class BadFormat < CherbyError; end
 
   class SoapError < CherbyError

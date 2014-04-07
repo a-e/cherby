@@ -149,12 +149,12 @@ module Cherby
     #   The date/time string to parse. May or may not include a trailing
     #   [+-]HH:MM or [+-]HHMM.
     #
-    # @param [Integer] tz_offset
+    # @param [Integer] default_tz_offset
     #   Offset in hours (positive or negative) between UTC and the given
-    #   `dt_string`. For example, Eastern Time is `-5`. This is ONLY used if
+    #   `dt_string`. For example, US Eastern Time is `-5`. This is ONLY used if
     #   `dt_string` does NOT include a trailing offset component.
     #
-    def self.parse_datetime(dt_string, tz_offset=-5)
+    def self.parse_datetime(dt_string, default_tz_offset=0)
       begin
         result = DateTime.parse(dt_string)
       rescue
@@ -163,27 +163,37 @@ module Cherby
       # If offset was part of the dt_string, use new_offset to get UTC
       if dt_string =~ /[+-]\d\d:?\d\d$/
         return result.new_offset(0)
-      # Otherwise, subtract the numeric offset to get UTC time
+      # Otherwise, subtract the default offset to get UTC time
       else
-        return result - Rational(tz_offset.to_i, 24)
+        return result - Rational(default_tz_offset.to_i, 24)
       end
     end
 
     # Return the last-modified date/time of this BusinessObject
-    # (LastModDateTime converted to DateTime)
-    def modified
+    # (LastModDateTime converted to DateTime).
+    #
+    # @param [Integer] default_tz_offset
+    #   Offset in hours (positive or negative) between UTC and the given
+    #   `dt_string`. For example, US Eastern Time is `-5`. This is ONLY used if
+    #   `dt_string` does NOT include a trailing offset component.
+    #
+    # @raise [Cherby::MissingData, Cherby::BadFormat]
+    #   If `LastModDateTime` is missing or cannot be parsed, respectively
+    #
+    def modified(default_tz_offset=0)
       last_mod = self['LastModDateTime']
       if last_mod.nil? || last_mod.empty?
-        raise RuntimeError, "BusinessObject is missing LastModDateTime field."
+        raise Cherby::MissingData.new("BusinessObject is missing LastModDateTime field.")
       end
       begin
-        return BusinessObject.parse_datetime(last_mod)
+        return BusinessObject.parse_datetime(last_mod, default_tz_offset)
       rescue(ArgumentError)
-        raise RuntimeError, "Cannot parse LastModDateTime: '#{last_mod}'"
+        raise Cherby::BadFormat.new("Cannot parse LastModDateTime: '#{last_mod}'")
       end
     end
 
     # Return the last-modified time as a human-readable string
+    # TODO: Make this more error-tolerant with a default date?
     def mod_s
       return modified.strftime('%Y-%m-%d %H:%M:%S')
     end
