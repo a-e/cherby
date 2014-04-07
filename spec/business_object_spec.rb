@@ -298,6 +298,47 @@ describe Cherby::BusinessObject do
       end
     end
 
+    describe "#fields_equal?" do
+      before(:each) do
+        xml = '<BusinessObject Name="MySubclass"><FieldList/></BusinessObject>'
+        @obj1 = MySubclass.new(xml)
+        @obj2 = MySubclass.new(xml)
+
+        @obj1['Status'] = 'Open'
+        @obj2['Status'] = 'Open'
+        @obj1['Comment'] = 'Whatever'
+        @obj2['Comment'] = 'Whatever'
+      end
+
+      context "compare specific fields" do
+        it "returns true if all fields are equal" do
+          @obj1.fields_equal?(@obj2, 'Status').should be_true
+          @obj1.fields_equal?(@obj2, 'Comment').should be_true
+          @obj1.fields_equal?(@obj2, 'Status', 'Comment').should be_true
+        end
+
+        it "returns false if any field differs" do
+          @obj1['ID'] = '123'
+          @obj2['ID'] = '456'
+          @obj1.fields_equal?(@obj2, 'ID').should be_false
+          @obj1.fields_equal?(@obj2, 'ID', 'Status').should be_false
+          @obj1.fields_equal?(@obj2, 'Status', 'ID').should be_false
+        end
+      end
+
+      context "compare all fields (default)" do
+        it "returns true if all fields are equal" do
+          @obj1.fields_equal?(@obj2).should be_true
+        end
+
+        it "returns false if any field differs" do
+          @obj1['ID'] = '123'
+          @obj2['ID'] = '456'
+          @obj1.fields_equal?(@obj2).should be_false
+        end
+      end
+    end #fields_equal?
+
     describe "#copy_fields_from" do
       before(:each) do
         xml = %Q{

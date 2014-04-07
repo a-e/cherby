@@ -217,6 +217,28 @@ module Cherby
       field.content = value.to_s
     end
 
+    # Return true if `other_object` has the same values in all fields
+    # given by`field_names`.
+    #
+    # @param [BusinessObject] other_object
+    #   The object to compare with
+    # @param [Array<String>] field_names
+    #   Names of fields whose values you want to compare. If omitted,
+    #   compare *all* fields for equality.
+    #
+    # @return [Boolean]
+    #   True if all fields are equal, false if any differ
+    #
+    def fields_equal?(other_object, *field_names)
+      if field_names.empty?
+        return self.to_hash == other_object.to_hash
+      else
+        return field_names.all? do |field|
+          self[field] == other_object[field]
+        end
+      end
+    end
+
     # Copy designated fields from one BusinessObject to another.
     #
     # @example
