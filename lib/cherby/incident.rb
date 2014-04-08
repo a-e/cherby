@@ -17,24 +17,6 @@ module Cherby
       return id.to_s =~ /\d+/
     end
 
-    # Mark this incident as complete by filling in relevant fields.
-    # FIXME: Parameterize these, instead of assuming Jira relationship.
-    #
-    def complete!(comments = "Closed in Jira => automated close.")
-      self["CloseDescription"] = comments
-      self["LastModDateTime"] = DateTime.now.to_s
-      self["Stat_NumberOfTouches"] = self["Stat_NumberOfTouches"].to_i + 1
-      #self["PhaseInvestigateStatus"] = "Complete"
-      self["PhaseResolveStatus"] = "Complete"
-      #self["PhaseCloseStatus"] = "Complete"
-      self["ClosureCode"] = "Completed"
-      self["CMDBUpdate"] = "No"
-      self["BusinessService"] = "Not Applicable"
-      self["RequestType"] = "Not Applicable"
-      self["SubCategory"] = "JIRA"
-      self["SubcategoryNonHR"] = "JIRA"
-    end
-
     # Return Task instances for all tasks associated with this Incident.
     #
     # @return [Array<Task>]

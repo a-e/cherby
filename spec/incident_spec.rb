@@ -29,19 +29,6 @@ module Cherby
         end
       end #exists?
 
-      describe "#complete!" do
-        it "sets appropriate fields to indicate incident completion" do
-          @incident.complete!('Testing completion')
-
-          @incident['CloseDescription'].should == 'Testing completion'
-          @incident['PhaseResolveStatus'].should == 'Complete'
-          @incident['ClosureCode'].should == 'Completed'
-          @incident['CMDBUpdate'].should == 'No'
-          @incident['SubCategory'].should == 'JIRA'
-          @incident['SubcategoryNonHR'].should == 'JIRA'
-        end
-      end #complete!
-
       describe "#reopen!" do
         it "TODO"
       end #reopen!
