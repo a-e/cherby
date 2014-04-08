@@ -29,10 +29,6 @@ module Cherby
         end
       end #exists?
 
-      describe "#reopen!" do
-        it "TODO"
-      end #reopen!
-
       describe "#tasks" do
         it "returns an array of Task instances" do
           @incident.tasks.count.should == 5
