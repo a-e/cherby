@@ -32,11 +32,20 @@ describe Cherby::Cherwell do
   end #initialize
 
   describe "#login" do
-    it "success when Cherwell returns a true status" do
+    it "returns true when Cherwell returns true with nil last_error" do
       login_response = savon_response('Login', 'true')
-      savon.expects(:login).with(:message => :any).
-        returns(login_response)
+      savon.expects(:login).with(:message => :any).returns(login_response)
+      @cherwell.stub(:last_error => nil)
       @cherwell.login.should be_true
+    end
+
+    it "raises Cherby::LoginFailed when Cherwell returns true, but last_error is non-nil" do
+      login_response = savon_response('Login', 'true')
+      savon.expects(:login).with(:message => :any).returns(login_response)
+      @cherwell.stub(:last_error => "Kaboom")
+      lambda do
+        @cherwell.login
+      end.should raise_error(Cherby::LoginFailed, /Cherwell returned error/)
     end
 
     it "raises Cherby::LoginFailed when client.login raises any exception" do

@@ -26,6 +26,9 @@ module Cherby
       super(:wsdl => wsdl_url, :log => verbose_logging)
     end
 
+    # Allow setting cookies
+    attr_accessor :cookies
+
     # Call a given SOAP method with an optional body.
     #
     # @example
@@ -52,7 +55,7 @@ module Cherby
       response_field = (method.to_s + '_response').to_sym
       result_field = (method.to_s + '_result').to_sym
       # Submit the request
-      response = self.call(method, :message => body)
+      response = self.call(method, :message => body, :cookies => self.cookies)
       return response.to_hash[response_field][result_field]
     end
 

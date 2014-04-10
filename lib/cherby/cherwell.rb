@@ -54,21 +54,22 @@ module Cherby
       rescue => e
         # This can happen if a bad URL is given
         raise Cherby::LoginFailed, e.message
-      else
-        if response.body[:login_response][:login_result] == true
-          # FIXME: Using the workaround described in this issue:
-          #   https://github.com/savonrb/savon/issues/363
-          # because the version recommended in the documentation:
-          #   auth_cookies = response.http.cookies
-          # does not work, giving:
-          #   NoMethodError: undefined method `cookies' for #<HTTPI::Response:0x...>
-          @client.globals[:headers] = {"Cookie" => response.http.headers["Set-Cookie"]}
-          return true
-        # This can happen if invalid credentials are given
-        else
-          raise Cherby::LoginFailed, "Cherwell returned false status"
-        end
       end
+
+      # This can happen if invalid credentials are given
+      if response.body[:login_response][:login_result] == false
+        raise Cherby::LoginFailed, "Cherwell returned false status"
+      end
+
+      # Store cookies so subsequent requests will be authorized
+      @client.cookies = response.http.cookies
+
+      # Double-check that login worked
+      if self.last_error
+        raise Cherby::LoginFailed, "Cherwell returned error: '#{self.last_error}'"
+      end
+
+      return true
     end
 
     # Log out of Cherwell.
